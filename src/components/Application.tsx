@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import * as video from '../sorce/Friendss05e09.mkv'
-import * as subtitleEn from '../sorce/Friends5x09.vtt'
+import video from '../sorce/Friendss05e09.mkv'
+import subtitleEn from '../sorce/Friends5x09.vtt'
 import {parseVtt, toggleFullScreenForElement} from "../utils";
 import axios from "axios";
 import translate from "translate";
@@ -37,7 +37,7 @@ export const Application = () => {
             console.log(result)
         })
 
-        videoRef.current.addEventListener('timeupdate', (event) => {
+        videoRef.current.addEventListener('timeupdate', () => {
             let millisecond = videoRef.current.currentTime * 1000
             console.log("setCurrentMillisecond: ", millisecond)
             setCurrentMillisecond(millisecond)
