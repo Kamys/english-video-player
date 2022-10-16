@@ -6,6 +6,7 @@ import subtitleRu from '../sorce/Friends5x09-ru.srt'
 import { toggleFullScreenForElement} from "../utils";
 import translate from "translate";
 import {Subtitle} from "./Subtitle";
+import {Settings} from "./Settings";
 
 export const Application = () => {
     const [isPlay, setIsPlay] = useState(false)
@@ -87,6 +88,7 @@ export const Application = () => {
                     subtitleUrl={subtitleEn}
                 />
             </div>
+            <Settings />
             <div className="video-controls">
                 <button type="button" onClick={togglePlay}>
                     {isPlay ? "Stop" : "Play"}
