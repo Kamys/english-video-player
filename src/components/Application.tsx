@@ -44,6 +44,19 @@ export const Application = () => {
         });
     }, [])
 
+    useEffect(() => {
+        const onKeydown = (event) => {
+            if (event.code == 'Space') {
+                togglePlay()
+                event.preventDefault()
+                event.stopPropagation()
+            }
+        }
+        window.addEventListener("keydown",  onKeydown)
+
+        return () => window.removeEventListener("keydown",  onKeydown)
+    }, [togglePlay])
+
     const currentSubTitle = useMemo(() => {
         const findSubtitle = subtitles.find(subtitle => {
             if (!subtitle) {
@@ -56,7 +69,6 @@ export const Application = () => {
     }, [currentMillisecond])
 
     const handleTranslate = useCallback((word: string) => {
-        console.log("Start translate: " + word)
         setTranslateResult("Translate: " + word + ". Loading...")
         translate(word, "ru").then(setTranslateResult)
     }, [])
@@ -73,9 +85,8 @@ export const Application = () => {
                     Full screen
                 </button>
             </div>
-            <video ref={videoRef} className="video" controls={false}>
+            <video onClick={togglePlay} ref={videoRef} className="video" controls={false}>
                 <source src={video}/>
-
             </video>
         </div>
     )
