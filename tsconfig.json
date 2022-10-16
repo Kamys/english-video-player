@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["node_modules/@types"],
+    "module": "ES2020",
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "jsx": "react",
+    "sourceMap": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": false,
+    "inlineSources": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "./dist", "**/__test__"]
+}

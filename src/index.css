@@ -1,0 +1,56 @@
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+
+.video-container {
+    width: 800px;
+    border-radius: 4px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.subtitle {
+    z-index: 2;
+    white-space: pre-line;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    background-color: #00000069;
+    font-size: 25px;
+    position: absolute;
+    bottom: 30px;
+}
+
+.translate {
+    z-index: 3;
+    white-space: pre-line;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    background-color: #00000069;
+    font-size: 25px;
+    position: absolute;
+    bottom: 100px;
+}
+
+.video-controls {
+    z-index: 1;
+    position: absolute;
+    top: calc(100% - 30px);
+    left: 0;
+}
+
+.video {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.active {
+    background-color: rgba(0, 255, 255, 0.6);
+    border-radius: 1px;
+}
