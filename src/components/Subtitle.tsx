@@ -2,6 +2,7 @@ import React, {FC, useCallback, useEffect, useMemo, useState} from "react";
 import axios from "axios";
 import * as subtitleParser from "@plussub/srt-vtt-parser";
 import {Entry} from "@plussub/srt-vtt-parser/dist/src/types";
+import {Word} from "./Word";
 
 interface Props {
     subtitleUrl: string
@@ -12,7 +13,6 @@ interface Props {
 
 export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecond}) => {
     const [subtitles, setSubtitles] = useState<Entry[]>([])
-    const [activeWord, setActiveWord] = useState<string>()
 
     useEffect(() => {
         axios.get<string>(subtitleUrl).then(response => {
@@ -52,24 +52,7 @@ export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecon
     const words = currentText && currentText.split(" ").map((word, index) => {
         const key = word + index;
         return (
-            <>
-                <span
-                    className={key == activeWord ? "active" : ""}
-                    onMouseEnter={(e) => {
-                        if (!onTranslate) {
-                            return
-                        }
-                        setActiveWord(key)
-                        e.preventDefault()
-                        e.stopPropagation()
-                    }}
-                    onMouseOut={() => setActiveWord("")}
-                    onClick={handleClick(word)} key={key}
-                >
-                {word}
-                </span>
-                {" "}
-            </>
+            <Word key={key} word={word} onClick={handleClick(word)} needBacklight={!!onTranslate} />
         )
     })
 
