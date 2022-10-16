@@ -40,7 +40,6 @@ export const Application = () => {
     useEffect(() => {
         videoRef.current.addEventListener('timeupdate', () => {
             let millisecond = videoRef.current.currentTime * 1000
-            console.log("setCurrentMillisecond: ", millisecond)
             setCurrentMillisecond(millisecond)
         });
     }, [])

@@ -18,7 +18,6 @@ export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecon
         axios.get<string>(subtitleUrl).then(response => {
             const result = subtitleParser.parse(response.data)
             setSubtitles(result.entries)
-            console.log(result)
         })
     }, [])
 
