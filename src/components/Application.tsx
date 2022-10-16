@@ -1,17 +1,17 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import video from '../sorce/Friendss05e09.mkv'
-import subtitleEn from '../sorce/Friends5x09.vtt'
-import {parseVtt, toggleFullScreenForElement} from "../utils";
-import axios from "axios";
+import subtitleEn from '../sorce/Friends5x09-en.vtt'
+import subtitleRu from '../sorce/Friends5x09-ru.srt'
+import { toggleFullScreenForElement} from "../utils";
 import translate from "translate";
 import {Subtitle} from "./Subtitle";
 
 export const Application = () => {
     const [isPlay, setIsPlay] = useState(false)
+    const [textForTranslate, setTextForTranslate] = useState<string | null>(null)
     const [translateResult, setTranslateResult] = useState<string | null>(null)
     const [currentMillisecond, setCurrentMillisecond] = useState(0)
-    const [subtitles, setSubtitles] = useState([])
     const videoContainerRef = useRef<HTMLDivElement>()
     const videoRef = useRef<HTMLVideoElement>()
 
@@ -20,23 +20,24 @@ export const Application = () => {
         toggleFullScreenForElement(videoContainer)
     }, [])
 
+    const onPause = useCallback(() => {
+        let video = videoRef.current;
+        video.pause()
+        setIsPlay(false)
+    }, [])
+
     const togglePlay = useCallback(() => {
         let video = videoRef.current;
         if (isPlay) {
-            video.pause()
+            onPause()
         } else {
             video.play()
+            setIsPlay(true)
+            setTranslateResult(null)
         }
-        setIsPlay(!isPlay)
     }, [isPlay])
 
     useEffect(() => {
-        axios.get(subtitleEn).then(response => {
-            const result = parseVtt(response.data)
-            setSubtitles(result)
-            console.log(result)
-        })
-
         videoRef.current.addEventListener('timeupdate', () => {
             let millisecond = videoRef.current.currentTime * 1000
             console.log("setCurrentMillisecond: ", millisecond)
@@ -52,31 +53,41 @@ export const Application = () => {
                 event.stopPropagation()
             }
         }
-        window.addEventListener("keydown",  onKeydown)
+        window.addEventListener("keydown", onKeydown)
 
-        return () => window.removeEventListener("keydown",  onKeydown)
+        return () => window.removeEventListener("keydown", onKeydown)
     }, [togglePlay])
 
-    const currentSubTitle = useMemo(() => {
-        const findSubtitle = subtitles.find(subtitle => {
-            if (!subtitle) {
-                return false
-            }
-            return subtitle.period.start <= currentMillisecond + 150 && subtitle.period.end >= currentMillisecond
-        });
-        console.log("findSubtitle: ", findSubtitle)
-        return findSubtitle?.text || ""
-    }, [currentMillisecond])
-
     const handleTranslate = useCallback((word: string) => {
-        setTranslateResult("Translate: " + word + ". Loading...")
+        onPause()
+        setTextForTranslate(word)
         translate(word, "ru").then(setTranslateResult)
-    }, [])
+    }, [onPause])
 
     return (
         <div ref={videoContainerRef} className="video-container">
-            {translateResult && <div className="translate">{translateResult}</div>}
-            <Subtitle text={currentSubTitle} onTranslate={handleTranslate}/>
+            <div className="subtitle-container">
+                {translateResult && <div className="translate">
+                    {translateResult}
+                    <div>
+                        <a
+                            target="_blank"
+                            href={"https://context.reverso.net/translation/english-russian/" + textForTranslate}>
+                            Подробнее
+                        </a>
+                    </div>
+                </div>}
+                <Subtitle
+                    onTranslate={null}
+                    currentMillisecond={currentMillisecond}
+                    subtitleUrl={subtitleRu}
+                />
+                <Subtitle
+                    onTranslate={handleTranslate}
+                    currentMillisecond={currentMillisecond}
+                    subtitleUrl={subtitleEn}
+                />
+            </div>
             <div className="video-controls">
                 <button type="button" onClick={togglePlay}>
                     {isPlay ? "Stop" : "Play"}

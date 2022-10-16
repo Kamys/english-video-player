@@ -13,28 +13,32 @@ html, body, #root {
     justify-content: center;
 }
 
-.subtitle {
+.subtitle-container {
     z-index: 2;
     white-space: pre-line;
     width: 100%;
     text-align: center;
-    color: #fff;
-    background-color: #00000069;
     font-size: 25px;
     position: absolute;
     bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.subtitle {
+    min-height: 37px;
+    margin-top: 10px;
+    color: #fff;
+    background-color: #00000069;
 }
 
 .translate {
     z-index: 3;
     white-space: pre-line;
-    width: 100%;
     text-align: center;
     color: #fff;
     background-color: #00000069;
     font-size: 25px;
-    position: absolute;
-    bottom: 100px;
 }
 
 .video-controls {

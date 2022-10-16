@@ -1,38 +1,69 @@
-import React, {FC, MouseEvent, useCallback, useState} from "react";
+import React, {FC, useCallback, useEffect, useMemo, useState} from "react";
+import axios from "axios";
+import * as subtitleParser from "@plussub/srt-vtt-parser";
+import {Entry} from "@plussub/srt-vtt-parser/dist/src/types";
 
 interface Props {
-    text: string
+    subtitleUrl: string
+    currentMillisecond: number
+
     onTranslate(word: string)
 }
 
-export const Subtitle: FC<Props> = ({text, onTranslate}) => {
+export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecond}) => {
+    const [subtitles, setSubtitles] = useState<Entry[]>([])
     const [activeWord, setActiveWord] = useState<string>()
-    const [isActiveAll, setActiveAll] = useState(false)
 
-    const handleClick = useCallback((data) => (e) => {
-        console.log("You click on: ", data)
-        e.stopPropagation()
-        e.preventDefault()
-        onTranslate(data)
+    useEffect(() => {
+        axios.get<string>(subtitleUrl).then(response => {
+            const result = subtitleParser.parse(response.data)
+            setSubtitles(result.entries)
+            console.log(result)
+        })
     }, [])
 
-    const handleTranslateAll = useCallback((event: MouseEvent<HTMLDivElement>) => {
-        onTranslate(text)
-    }, [text])
+    const currentText = useMemo(() => {
+        const findSubtitle = subtitles.find(subtitle => {
+            if (!subtitle) {
+                return false
+            }
+            return subtitle.from <= currentMillisecond + 150 && subtitle.to >= currentMillisecond
+        });
 
-    const words = text.split(" ").map((word, index) => {
+        return findSubtitle?.text
+    }, [currentMillisecond])
+
+    const handleClick = useCallback((data) => (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        onTranslate(data
+            .replaceAll(".", "")
+            .replaceAll("?", "")
+            .replaceAll("!", "")
+            .replaceAll(",", "")
+        )
+    }, [])
+
+    const handleTranslateAll = useCallback(() => {
+        if (onTranslate) {
+            onTranslate(currentText)
+        }
+    }, [currentText])
+
+    const words = currentText && currentText.split(" ").map((word, index) => {
         const key = word + index;
         return (
             <>
                 <span
                     className={key == activeWord ? "active" : ""}
                     onMouseEnter={(e) => {
+                        if (!onTranslate) {
+                            return
+                        }
                         setActiveWord(key)
-                        setActiveAll(false)
                         e.preventDefault()
                         e.stopPropagation()
                     }}
-                    onMouseMove={(e) => e.stopPropagation()}
                     onMouseOut={() => setActiveWord("")}
                     onClick={handleClick(word)} key={key}
                 >
@@ -42,13 +73,13 @@ export const Subtitle: FC<Props> = ({text, onTranslate}) => {
             </>
         )
     })
+
     return (
         <div
+            style={{ opacity: !!words ? 1 : 0 }}
             onClick={handleTranslateAll}
-            className={"subtitle " + (isActiveAll ? "active" : "")}
-            onMouseMove={() => setActiveAll(true)}
-            onMouseOut={() => setActiveAll(false)}
-            key={text}
+            className="subtitle"
+            key={currentText}
         >
             {words}
         </div>
