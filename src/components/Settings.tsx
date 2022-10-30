@@ -1,5 +1,7 @@
 import React, {FC, useState} from "react";
 import {CloseButton, ToggleButton} from "react-bootstrap";
+import {useStore} from "effector-react";
+import {$settings} from "../store/settrings";
 
 interface Props {
 }
@@ -26,10 +28,15 @@ const CheckBox = ({ onChange, title }) => {
 }
 
 export const Settings: FC<Props> = ({}) => {
+    const isShow = useStore($settings.store.isShow)
+
+    if (!isShow) {
+        return null
+    }
 
     return (
         <div className="settings">
-            <CloseButton className="button-close" />
+            <CloseButton className="button-close" onClick={() => $settings.action.onToggleShow()} />
             <h1 className='mb-3 text-center'>Настройки</h1>
             <div className="d-flex flex-column w-50">
                 <CheckBox

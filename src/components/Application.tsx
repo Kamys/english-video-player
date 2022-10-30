@@ -7,6 +7,9 @@ import { toggleFullScreenForElement} from "../utils";
 import translate from "translate";
 import {Subtitle} from "./Subtitle";
 import {Settings} from "./Settings";
+import * as Icon from 'react-bootstrap-icons';
+import {Button} from "react-bootstrap";
+import {$settings} from "../store/settrings";
 
 export const Application = () => {
     const [isPlay, setIsPlay] = useState(false)
@@ -90,12 +93,16 @@ export const Application = () => {
             </div>
             <Settings />
             <div className="video-controls">
-                <button type="button" onClick={togglePlay}>
-                    {isPlay ? "Stop" : "Play"}
-                </button>
-                <button type="button" onClick={toggleFullScreen}>
-                    Full screen
-                </button>
+                <Button size="sm" variant="outline-dark" onClick={togglePlay}>
+                    {isPlay ? <Icon.Stop color="white" /> : <Icon.Play color="white" />}
+                </Button>
+                <div></div>
+                <Button size="sm" variant="outline-dark" onClick={() => $settings.action.onToggleShow()}>
+                    <Icon.Gear color="white" />
+                </Button>
+                <Button className="pl-1" size="sm" variant="outline-dark" onClick={toggleFullScreen}>
+                    <Icon.ArrowsFullscreen color="white" />
+                </Button>
             </div>
             <video onClick={togglePlay} ref={videoRef} className="video" controls={false}>
                 <source src={video}/>
