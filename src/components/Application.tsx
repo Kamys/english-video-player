@@ -1,34 +1,24 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import video from '../sorce/Friendss05e09.mkv'
 import subtitleEn from '../sorce/Friends5x09-en.vtt'
 import subtitleRu from '../sorce/Friends5x09-ru.srt'
-import { toggleFullScreenForElement} from "../utils";
+import {toggleFullScreenForElement} from "../utils";
 import translate from "translate";
 import {Subtitle} from "./Subtitle";
 import {Settings} from "./Settings";
 import * as Icon from 'react-bootstrap-icons';
-import {Button} from "react-bootstrap";
+import {Button, ProgressBar} from "react-bootstrap";
 import {$settings} from "../store/settrings";
 
 export const Application = () => {
     const [isPlay, setIsPlay] = useState(false)
+    const [duration, setDuration] = useState<number>(0)
     const [textForTranslate, setTextForTranslate] = useState<string | null>(null)
     const [translateResult, setTranslateResult] = useState<string | null>(null)
     const [currentMillisecond, setCurrentMillisecond] = useState(0)
     const videoContainerRef = useRef<HTMLDivElement>()
     const videoRef = useRef<HTMLVideoElement>()
-
-    const toggleFullScreen = useCallback(() => {
-        const videoContainer = videoContainerRef.current
-        toggleFullScreenForElement(videoContainer)
-    }, [])
-
-    const onPause = useCallback(() => {
-        let video = videoRef.current;
-        video.pause()
-        setIsPlay(false)
-    }, [])
 
     const togglePlay = useCallback(() => {
         let video = videoRef.current;
@@ -41,10 +31,29 @@ export const Application = () => {
         }
     }, [isPlay])
 
+    const toggleFullScreen = useCallback(() => {
+        const videoContainer = videoContainerRef.current
+        toggleFullScreenForElement(videoContainer)
+    }, [togglePlay])
+
+    const onPause = useCallback(() => {
+        let video = videoRef.current;
+        video.pause()
+        setIsPlay(false)
+    }, [])
+
+
+    const handleTranslate = useCallback((word: string) => {
+        onPause()
+        setTextForTranslate(word)
+        translate(word, "ru").then(setTranslateResult)
+    }, [onPause])
+
     useEffect(() => {
         videoRef.current.addEventListener('timeupdate', () => {
             let millisecond = videoRef.current.currentTime * 1000
             setCurrentMillisecond(millisecond)
+            setDuration(videoRef.current.duration * 1000)
         });
     }, [])
 
@@ -59,13 +68,14 @@ export const Application = () => {
         window.addEventListener("keydown", onKeydown)
 
         return () => window.removeEventListener("keydown", onKeydown)
-    }, [togglePlay])
+    }, [])
 
-    const handleTranslate = useCallback((word: string) => {
-        onPause()
-        setTextForTranslate(word)
-        translate(word, "ru").then(setTranslateResult)
-    }, [onPause])
+    const watchPoint = useMemo(() => {
+        const onePercent = duration / 100;
+        return currentMillisecond / onePercent;
+    }, [duration, currentMillisecond])
+
+    console.log("watchPoint: ", watchPoint)
 
     return (
         <div ref={videoContainerRef} className="video-container">
@@ -91,17 +101,18 @@ export const Application = () => {
                     subtitleUrl={subtitleEn}
                 />
             </div>
-            <Settings />
+            <Settings/>
             <div className="video-controls">
+                <ProgressBar style={{gridArea: 'progress-bar'}} now={watchPoint}/>
                 <Button size="sm" variant="outline-dark" onClick={togglePlay}>
-                    {isPlay ? <Icon.Stop color="white" /> : <Icon.Play color="white" />}
+                    {isPlay ? <Icon.Stop color="white"/> : <Icon.Play color="white"/>}
                 </Button>
                 <div></div>
                 <Button size="sm" variant="outline-dark" onClick={() => $settings.action.onToggleShow()}>
-                    <Icon.Gear color="white" />
+                    <Icon.Gear color="white"/>
                 </Button>
                 <Button className="pl-1" size="sm" variant="outline-dark" onClick={toggleFullScreen}>
-                    <Icon.ArrowsFullscreen color="white" />
+                    <Icon.ArrowsFullscreen color="white"/>
                 </Button>
             </div>
             <video onClick={togglePlay} ref={videoRef} className="video" controls={false}>
