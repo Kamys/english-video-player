@@ -37,19 +37,13 @@ export const Application = () => {
     }, [togglePlay])
 
     const moveVideoTo = useCallback((time: number) => {
-        console.log('moveVideoTo: ', time)
         videoRef.current.currentTime = time / 1000
     }, [])
 
     const handleClickProgressBar = useCallback((event: React.MouseEvent) => {
         const rect = event.currentTarget.getBoundingClientRect()
         const x = event.clientX - rect.left
-        /* if (x < 0) {
-                moveVideoTo(0)
-                return
-            } */
         const percent = x / (event.currentTarget.clientWidth / 100)
-        console.log('percent: ', percent)
         moveVideoTo((duration / 100) * percent)
     }, [duration])
 
@@ -75,7 +69,6 @@ export const Application = () => {
 
     useEffect(() => {
         const onKeydown = (event) => {
-            console.log(event)
             if (event.key === ' ' ||
                 event.code === 'Space' ||
                 event.keyCode === 32) {
