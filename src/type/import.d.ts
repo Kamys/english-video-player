@@ -1,14 +1,14 @@
-declare module "*.mkv" {
+declare module '*.mkv' {
     const value: string
-    export default value;
+    export default value
 }
 
-declare module "*.vtt" {
+declare module '*.vtt' {
     const value: string
-    export default value;
+    export default value
 }
 
-declare module "*.srt" {
+declare module '*.srt' {
     const value: string
-    export default value;
+    export default value
 }

@@ -1,4 +1,4 @@
-import {createEvent, createStore} from "effector";
+import { createEvent, createStore } from 'effector'
 
 const onToggleShow = createEvent()
 const isShow = createStore(false)
@@ -9,6 +9,6 @@ export const $settings = {
         isShow,
     },
     action: {
-        onToggleShow
-    }
+        onToggleShow,
+    },
 }

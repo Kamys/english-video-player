@@ -1,8 +1,8 @@
-import React, {FC, useCallback, useEffect, useMemo, useState} from "react";
-import axios from "axios";
-import * as subtitleParser from "@plussub/srt-vtt-parser";
-import {Entry} from "@plussub/srt-vtt-parser/dist/src/types";
-import {Word} from "./Word";
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import axios from 'axios'
+import * as subtitleParser from '@plussub/srt-vtt-parser'
+import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
+import { Word } from './Word'
 
 interface Props {
     subtitleUrl: string
@@ -11,7 +11,7 @@ interface Props {
     onTranslate(word: string)
 }
 
-export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecond}) => {
+export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMillisecond }) => {
     const [subtitles, setSubtitles] = useState<Entry[]>([])
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecon
                 return false
             }
             return subtitle.from <= currentMillisecond + 150 && subtitle.to >= currentMillisecond
-        });
+        })
 
         return findSubtitle?.text
     }, [currentMillisecond])
@@ -36,10 +36,10 @@ export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecon
         e.stopPropagation()
         e.preventDefault()
         onTranslate(data
-            .replaceAll(".", "")
-            .replaceAll("?", "")
-            .replaceAll("!", "")
-            .replaceAll(",", "")
+            .replaceAll('.', '')
+            .replaceAll('?', '')
+            .replaceAll('!', '')
+            .replaceAll(',', ''),
         )
     }, [])
 
@@ -49,8 +49,8 @@ export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecon
         }
     }, [currentText])
 
-    const words = currentText && currentText.split(" ").map((word, index) => {
-        const key = word + index;
+    const words = currentText?.split(' ').map((word, index) => {
+        const key = word + index.toString()
         return (
             <Word key={key} word={word} onClick={handleClick(word)} needBacklight={!!onTranslate} />
         )
@@ -58,9 +58,9 @@ export const Subtitle: FC<Props> = ({onTranslate, subtitleUrl, currentMillisecon
 
     return (
         <div
-            style={{ opacity: !!words ? 1 : 0 }}
+            style={{ opacity: words ? 1 : 0 }}
             onClick={handleTranslateAll}
-            className="subtitle"
+            className='subtitle'
             key={currentText}
         >
             {words}

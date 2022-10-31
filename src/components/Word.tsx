@@ -1,4 +1,4 @@
-import React, {FC, MouseEventHandler, useState} from "react";
+import React, { FC, MouseEventHandler, useState } from 'react'
 
 interface Props {
     word: string
@@ -11,15 +11,15 @@ export const Word: FC<Props> = ({ onClick, word, needBacklight }) => {
     const [isActive, setActive] = useState(false)
     return (
         <>
-                <span
-                    className={needBacklight && isActive ? "active" : ""}
-                    onMouseEnter={() => setActive(true)}
-                    onMouseOut={() => setActive(false)}
-                    onClick={onClick}
-                >
-                {word}
-                </span>
-            {" "}
+            <span
+                className={needBacklight && isActive ? 'active' : ''}
+                onMouseEnter={() => setActive(true)}
+                onMouseOut={() => setActive(false)}
+                onClick={onClick}
+            >
+            {word}
+            </span>
+            {' '}
         </>
     )
 }

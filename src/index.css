@@ -20,7 +20,7 @@ html, body, #root {
     text-align: center;
     font-size: 25px;
     position: absolute;
-    bottom: 40px;
+    bottom: 50px;
     display: flex;
     flex-direction: column;
 }
@@ -81,7 +81,7 @@ html, body, #root {
     left: 10px;
     z-index: 3;
     border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     padding: 10px;
 }
 
