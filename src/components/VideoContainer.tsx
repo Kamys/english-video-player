@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { toggleFullScreenForElement } from '../utils'
-import translate from 'translate'
-import { Subtitle } from './Subtitle'
 import { Settings } from './Settings'
 import * as Icon from 'react-bootstrap-icons'
 import { Button, ProgressBar } from 'react-bootstrap'
 import { $settings } from '../store/settrings'
+import { SubtitleContainer } from './SubtitleContainer'
+import { $translate } from '../store/translate'
 
 interface Props {
     videoSrc: string
@@ -17,8 +17,6 @@ interface Props {
 export const VideoContainer: React.FC<Props> = ({ videoSrc, subtitleOneSrc, subtitleTwoSrc }) => {
     const [isPlay, setIsPlay] = useState(false)
     const [duration, setDuration] = useState<number>(0)
-    const [textForTranslate, setTextForTranslate] = useState<string | null>(null)
-    const [translateResult, setTranslateResult] = useState<string | null>(null)
     const [currentMillisecond, setCurrentMillisecond] = useState(0)
     const videoContainerRef = useRef<HTMLDivElement>()
     const videoRef = useRef<HTMLVideoElement>()
@@ -30,7 +28,7 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc, subtitleOneSrc, subt
         } else {
             video.play()
             setIsPlay(true)
-            setTranslateResult(null)
+            $translate.action.onTranslate(null)
         }
     }, [isPlay])
 
@@ -56,11 +54,6 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc, subtitleOneSrc, subt
         setIsPlay(false)
     }, [])
 
-    const handleTranslate = useCallback((word: string) => {
-        onPause()
-        setTextForTranslate(word)
-        translate(word, 'ru').then(setTranslateResult)
-    }, [onPause])
 
     useEffect(() => {
         videoRef.current.addEventListener('timeupdate', () => {
@@ -92,29 +85,13 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc, subtitleOneSrc, subt
 
     return (
         <div ref={videoContainerRef} className='video-container'>
-            <div className='subtitle-container'>
-                {translateResult && <div className='translate'>
-                    {translateResult}
-                    <div>
-                        <a
-                            target='_blank'
-                            href={'https://context.reverso.net/translation/english-russian/' + textForTranslate}
-                            rel='noreferrer'>
-                            Подробнее
-                        </a>
-                    </div>
-                </div>}
-                {subtitleTwoSrc && <Subtitle
-                    onTranslate={null}
-                    currentMillisecond={currentMillisecond}
-                    subtitleUrl={subtitleTwoSrc}
-                />}
-                {subtitleOneSrc && <Subtitle
-                    onTranslate={handleTranslate}
-                    currentMillisecond={currentMillisecond}
-                    subtitleUrl={subtitleOneSrc}
-                />}
-            </div>
+            <SubtitleContainer
+                isPlay={isPlay}
+                onPause={onPause}
+                subtitleTwoSrc={subtitleTwoSrc}
+                subtitleOneSrc={subtitleOneSrc}
+                currentMillisecond={currentMillisecond}
+            />
             <Settings />
             <div className='video-controls'>
                 <ProgressBar

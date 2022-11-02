@@ -7,11 +7,11 @@ import { Word } from './Word'
 interface Props {
     subtitleUrl: string
     currentMillisecond: number
-
+    isDisplay: boolean
     onTranslate(word: string)
 }
 
-export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMillisecond }) => {
+export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMillisecond, isDisplay }) => {
     const [subtitles, setSubtitles] = useState<Entry[]>([])
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMilliseco
             const result = subtitleParser.parse(response.data)
             setSubtitles(result.entries)
         })
-    }, [])
+    }, [subtitleUrl])
 
     const currentText = useMemo(() => {
         const findSubtitle = subtitles.find(subtitle => {
@@ -56,9 +56,11 @@ export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMilliseco
         )
     })
 
+    console.log("Render subtitle: ", currentText, words, currentMillisecond)
+
     return (
         <div
-            style={{ opacity: words ? 1 : 0 }}
+            style={{ opacity: words && isDisplay ? 1 : 0 }}
             onClick={handleTranslateAll}
             className='subtitle'
             key={currentText}

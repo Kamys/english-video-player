@@ -4,31 +4,32 @@ import { useStore } from 'effector-react'
 import { $settings } from '../store/settrings'
 
 interface Props {
+    title: string
+    value: boolean
+    onChange: (value: boolean) => void
 }
 
-const CheckBox = ({ onChange, title }) => {
-    const [checked, setChecked] = useState(false)
-
+const CheckBox = ({ onChange, title, value }) => {
     return (
         <ToggleButton
             id={title}
             className='mb-2'
             type='checkbox'
             variant='outline-primary'
-            checked={checked}
+            checked={value}
             value='1'
             onChange={(e) => {
-                setChecked(e.currentTarget.checked)
                 onChange(e.currentTarget.checked)
             }}
         >
-            {title}: {checked ? 'on' : 'off'}
+            {title}: {value ? 'on' : 'off'}
         </ToggleButton>
     )
 }
 
-export const Settings: FC<Props> = () => {
+export const Settings: FC = () => {
     const isShow = useStore($settings.store.isShow)
+    const settings = useStore($settings.store.settings)
 
     if (!isShow) {
         return null
@@ -41,13 +42,18 @@ export const Settings: FC<Props> = () => {
             <div className='d-flex flex-column w-50'>
                 <CheckBox
                     title='Subtitles'
-                    onChange={() => {
-                    }}
+                    value={settings.isDisplaySubtitles}
+                    onChange={() => {}}
                 />
                 <CheckBox
-                    title='Subtitles only when the video is paused'
-                    onChange={() => {
-                    }}
+                    title='Rus subtitles only when the video is paused'
+                    value={settings.isDisplayRusSubtitlesOnlyOnPause}
+                    onChange={() => { }}
+                />
+                <CheckBox
+                    title='En subtitles only when the video is paused'
+                    value={settings.isDisplayEnSubtitlesOnlyOnPause}
+                    onChange={() => { }}
                 />
             </div>
         </div>
