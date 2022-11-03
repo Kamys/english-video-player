@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { CloseButton, ToggleButton } from 'react-bootstrap'
 import { useStore } from 'effector-react'
 import { $settings } from '../store/settrings'
@@ -9,7 +9,13 @@ interface Props {
     onChange: (value: boolean) => void
 }
 
-const CheckBox = ({ onChange, title, value }) => {
+const {
+    onToggleDisplaySubtitles,
+    onDisplayEnSubtitlesOnlyOnPause,
+    onDisplayRusSubtitlesOnlyOnPause
+} = $settings.action
+
+const CheckBox: React.FC<Props> = ({ onChange, title, value }) => {
     return (
         <ToggleButton
             id={title}
@@ -35,25 +41,27 @@ export const Settings: FC = () => {
         return null
     }
 
+    console.log(settings)
+
     return (
         <div className='settings'>
             <CloseButton className='button-close' onClick={() => $settings.action.onToggleShow()} />
             <h1 className='mb-3 text-center'>Настройки</h1>
             <div className='d-flex flex-column w-50'>
                 <CheckBox
-                    title='Subtitles'
+                    title='Показывать ли субтитры'
                     value={settings.isDisplaySubtitles}
-                    onChange={() => {}}
+                    onChange={onToggleDisplaySubtitles}
                 />
                 <CheckBox
-                    title='Rus subtitles only when the video is paused'
+                    title='Показывать Rus субтитры только на паузе'
                     value={settings.isDisplayRusSubtitlesOnlyOnPause}
-                    onChange={() => { }}
+                    onChange={onDisplayRusSubtitlesOnlyOnPause}
                 />
                 <CheckBox
-                    title='En subtitles only when the video is paused'
+                    title='Показывать En субтитры только на паузе'
                     value={settings.isDisplayEnSubtitlesOnlyOnPause}
-                    onChange={() => { }}
+                    onChange={onDisplayEnSubtitlesOnlyOnPause}
                 />
             </div>
         </div>

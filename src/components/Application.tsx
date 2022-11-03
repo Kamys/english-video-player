@@ -8,10 +8,10 @@ export const Application = () => {
     const [subtitleTwoSrc, setSubtitleTwoSrc] = useState(null)
 
     return (
-        <div style={{ padding: 10 }}>
-            <SelectFile label='Select video' onSelect={setVideoSrc} />
-            <SelectFile label='Select subtitle en' onSelect={setSubtitleOneSrc} />
-            <SelectFile label='Select subtitle ru' onSelect={setSubtitleTwoSrc} />
+        <div style={{ padding: 10, width: 500 }}>
+            <SelectFile label='Выбирите видео' onSelect={setVideoSrc} />
+            <SelectFile label='Выберите субтитры en' onSelect={setSubtitleOneSrc} />
+            <SelectFile label='Выберите субтитры ru' onSelect={setSubtitleTwoSrc} />
             {videoSrc &&
                 <VideoContainer
                     videoSrc={videoSrc}
