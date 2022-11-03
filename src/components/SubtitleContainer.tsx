@@ -3,18 +3,14 @@ import { Subtitle } from './Subtitle'
 import { $translate } from '../store/translate'
 import { useStore } from 'effector-react'
 import { $settings } from '../store/settrings'
+import { $video } from '../store/video'
 
-interface Props {
-    isPlay: boolean
-    onPause: () => void
-    currentMillisecond: number
-}
+interface Props {}
 
-export const SubtitleContainer: React.FC<Props> = ({
-                                                       onPause,
-                                                       currentMillisecond,
-                                                       isPlay,
-                                                   }) => {
+const { onPause } = $video.action
+
+export const SubtitleContainer: React.FC<Props> = () => {
+    const { currentMillisecond, isPlay } = useStore($video.store)
     const { translateResult, textForTranslate } = useStore($translate.store)
     const {
         isDisplaySubtitles,

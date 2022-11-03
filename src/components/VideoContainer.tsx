@@ -7,25 +7,26 @@ import { Button, ProgressBar } from 'react-bootstrap'
 import { $settings } from '../store/settrings'
 import { SubtitleContainer } from './SubtitleContainer'
 import { $translate } from '../store/translate'
+import { useStore } from 'effector-react'
+import { $video } from '../store/video'
 
 interface Props {
     videoSrc: string
 }
 
+const { setCurrentMillisecond, setDuration, onTogglePlay } = $video.action
+
 export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
-    const [isPlay, setIsPlay] = useState(false)
-    const [duration, setDuration] = useState<number>(0)
-    const [currentMillisecond, setCurrentMillisecond] = useState(0)
+    const { isPlay, currentMillisecond, duration } = useStore($video.store)
     const videoContainerRef = useRef<HTMLDivElement>()
     const videoRef = useRef<HTMLVideoElement>()
 
-    const togglePlay = useCallback(() => {
+    useEffect(() => {
         const video = videoRef.current
         if (isPlay) {
-            onPause()
+            video.pause()
         } else {
             video.play()
-            setIsPlay(true)
             $translate.action.onTranslate(null)
         }
     }, [isPlay])
@@ -33,7 +34,7 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
     const toggleFullScreen = useCallback(() => {
         const videoContainer = videoContainerRef.current
         toggleFullScreenForElement(videoContainer)
-    }, [togglePlay])
+    }, [])
 
     const moveVideoTo = useCallback((time: number) => {
         videoRef.current.currentTime = time / 1000
@@ -46,12 +47,6 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
         moveVideoTo((duration / 100) * percent)
     }, [duration])
 
-    const onPause = useCallback(() => {
-        const video = videoRef.current
-        video.pause()
-        setIsPlay(false)
-    }, [])
-
 
     useEffect(() => {
         videoRef.current.addEventListener('timeupdate', () => {
@@ -63,10 +58,9 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
 
     useEffect(() => {
         const onKeydown = (event) => {
-            if (event.key === ' ' ||
-                event.code === 'Space' ||
-                event.keyCode === 32) {
-                togglePlay()
+            const isSpace = event.key === ' ' ||  event.code === 'Space' || event.keyCode === 32
+            if (isSpace) {
+                onTogglePlay()
                 event.preventDefault()
                 event.stopPropagation()
             }
@@ -74,20 +68,20 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
         window.addEventListener('keydown', onKeydown)
 
         return () => window.removeEventListener('keydown', onKeydown)
-    }, [togglePlay])
+    }, [])
 
     const watchPoint = useMemo(() => {
         const onePercent = duration / 100
         return currentMillisecond / onePercent
     }, [duration, currentMillisecond])
 
+    const handleTogglePlay = useCallback(() => {
+        onTogglePlay()
+    }, [])
+
     return (
         <div ref={videoContainerRef} className='video-container'>
-            <SubtitleContainer
-                isPlay={isPlay}
-                onPause={onPause}
-                currentMillisecond={currentMillisecond}
-            />
+            <SubtitleContainer />
             <Settings />
             <div className='video-controls'>
                 <ProgressBar
@@ -95,7 +89,7 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
                     style={{ gridArea: 'progress-bar', cursor: 'pointer' }}
                     now={watchPoint}
                 />
-                <Button size='sm' variant='outline-dark' onClick={togglePlay}>
+                <Button size='sm' variant='outline-dark' onClick={handleTogglePlay}>
                     {isPlay ? <Icon.Stop color='white' /> : <Icon.Play color='white' />}
                 </Button>
                 <div></div>
@@ -106,7 +100,7 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
                     <Icon.ArrowsFullscreen color='white' />
                 </Button>
             </div>
-            <video onClick={togglePlay} ref={videoRef} className='video' controls={false}>
+            <video onClick={handleTogglePlay} ref={videoRef} className='video' controls={false}>
                 <source src={videoSrc} />
             </video>
         </div>

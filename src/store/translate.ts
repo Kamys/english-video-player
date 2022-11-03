@@ -12,10 +12,7 @@ const textForTranslate = createStore<string>(null)
 const translateResult = createStore<string>(null)
     .on(onTranslate.done, (_, params) => params.result)
 
-
-const store = combine(textForTranslate, translateResult, (textForTranslate, translateResult) => {
-    return { textForTranslate, translateResult }
-})
+const store = combine({textForTranslate, translateResult})
 
 
 export const $translate = {
