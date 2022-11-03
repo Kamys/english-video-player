@@ -1,3 +1,5 @@
+import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
+
 export const toggleFullScreenForElement = (element: HTMLElement) => {
     if (document.fullscreenElement) {
         document.exitFullscreen();
@@ -19,4 +21,15 @@ export const toggleFullScreenForElement = (element: HTMLElement) => {
         // @ts-ignore
         element.requestFullscreen();
     }
+}
+
+export const getSubtitle = (subtitles: Entry[], currentMillisecond: number) => {
+    const findSubtitle = subtitles.find(subtitle => {
+        if (!subtitle) {
+            return false
+        }
+        return subtitle.from <= currentMillisecond + 150 && subtitle.to >= currentMillisecond
+    })
+
+    return findSubtitle?.text
 }

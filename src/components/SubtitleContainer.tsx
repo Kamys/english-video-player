@@ -7,15 +7,11 @@ import { $settings } from '../store/settrings'
 interface Props {
     isPlay: boolean
     onPause: () => void
-    subtitleTwoSrc: string
-    subtitleOneSrc: string
     currentMillisecond: number
 }
 
 export const SubtitleContainer: React.FC<Props> = ({
                                                        onPause,
-                                                       subtitleOneSrc,
-                                                       subtitleTwoSrc,
                                                        currentMillisecond,
                                                        isPlay,
                                                    }) => {
@@ -48,18 +44,18 @@ export const SubtitleContainer: React.FC<Props> = ({
                     </a>
                 </div>
             </div>}
-            {subtitleTwoSrc && <Subtitle
+            <Subtitle
                 isDisplay={isDisplayRusSubtitlesOnlyOnPause ? !isPlay : true}
                 onTranslate={null}
                 currentMillisecond={currentMillisecond}
-                subtitleUrl={subtitleTwoSrc}
-            />}
-            {subtitleOneSrc && <Subtitle
+                langKey='ru'
+            />
+            <Subtitle
                 isDisplay={isDisplayEnSubtitlesOnlyOnPause ? !isPlay : true}
                 onTranslate={handleTranslate}
                 currentMillisecond={currentMillisecond}
-                subtitleUrl={subtitleOneSrc}
-            />}
+                langKey='en'
+            />
         </div>
     )
 }

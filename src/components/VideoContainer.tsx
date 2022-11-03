@@ -10,11 +10,9 @@ import { $translate } from '../store/translate'
 
 interface Props {
     videoSrc: string
-    subtitleOneSrc: string
-    subtitleTwoSrc: string
 }
 
-export const VideoContainer: React.FC<Props> = ({ videoSrc, subtitleOneSrc, subtitleTwoSrc }) => {
+export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
     const [isPlay, setIsPlay] = useState(false)
     const [duration, setDuration] = useState<number>(0)
     const [currentMillisecond, setCurrentMillisecond] = useState(0)
@@ -88,8 +86,6 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc, subtitleOneSrc, subt
             <SubtitleContainer
                 isPlay={isPlay}
                 onPause={onPause}
-                subtitleTwoSrc={subtitleTwoSrc}
-                subtitleOneSrc={subtitleOneSrc}
                 currentMillisecond={currentMillisecond}
             />
             <Settings />

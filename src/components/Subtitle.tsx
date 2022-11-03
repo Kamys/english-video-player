@@ -1,36 +1,22 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import axios from 'axios'
-import * as subtitleParser from '@plussub/srt-vtt-parser'
-import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
+import React, { FC, useCallback, useMemo } from 'react'
 import { Word } from './Word'
+import { getSubtitle } from '../utils'
+import { useStore } from 'effector-react'
+import { $subtitle, SubtitleStore } from '../store/subtitle'
 
 interface Props {
-    subtitleUrl: string
     currentMillisecond: number
     isDisplay: boolean
     onTranslate(word: string)
+    langKey: keyof SubtitleStore
 }
 
-export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMillisecond, isDisplay }) => {
-    const [subtitles, setSubtitles] = useState<Entry[]>([])
+export const Subtitle: FC<Props> = ({ onTranslate, currentMillisecond, isDisplay, langKey }) => {
+    const store = useStore($subtitle.store)
+    const subtitles = store[langKey]
+    console.log(store, langKey, subtitles)
 
-    useEffect(() => {
-        axios.get<string>(subtitleUrl).then(response => {
-            const result = subtitleParser.parse(response.data)
-            setSubtitles(result.entries)
-        })
-    }, [subtitleUrl])
-
-    const currentText = useMemo(() => {
-        const findSubtitle = subtitles.find(subtitle => {
-            if (!subtitle) {
-                return false
-            }
-            return subtitle.from <= currentMillisecond + 150 && subtitle.to >= currentMillisecond
-        })
-
-        return findSubtitle?.text
-    }, [currentMillisecond])
+    const currentText = useMemo(() => getSubtitle(subtitles, currentMillisecond), [currentMillisecond, subtitles])
 
     const handleClick = useCallback((data) => (e) => {
         e.stopPropagation()
@@ -49,23 +35,21 @@ export const Subtitle: FC<Props> = ({ onTranslate, subtitleUrl, currentMilliseco
         }
     }, [currentText])
 
-    const words = currentText?.split(' ').map((word, index) => {
+    const wordComponents = currentText?.split(' ').map((word, index) => {
         const key = word + index.toString()
         return (
             <Word key={key} word={word} onClick={handleClick(word)} needBacklight={!!onTranslate} />
         )
     })
 
-    console.log("Render subtitle: ", currentText, words, currentMillisecond)
-
     return (
         <div
-            style={{ opacity: words && isDisplay ? 1 : 0 }}
+            style={{ opacity: wordComponents && isDisplay ? 1 : 0 }}
             onClick={handleTranslateAll}
             className='subtitle'
             key={currentText}
         >
-            {words}
+            {wordComponents}
         </div>
     )
 }
