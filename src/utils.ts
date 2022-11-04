@@ -23,13 +23,18 @@ export const toggleFullScreenForElement = (element: HTMLElement) => {
     }
 }
 
-export const getSubtitle = (subtitles: Entry[], currentMillisecond: number) => {
-    const findSubtitle = subtitles.find(subtitle => {
+export const getSubtitleText = (subtitles: Entry[], currentMillisecond: number, diff: number) => {
+    return getSubtitle(subtitles, currentMillisecond, diff)?.text
+}
+
+export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff: number) => {
+    return subtitles.find(subtitle => {
         if (!subtitle) {
             return false
         }
-        return subtitle.from <= currentMillisecond + 150 && subtitle.to >= currentMillisecond
+        console.log(currentMillisecond, diff)
+        const from = subtitle.from + diff
+        let to = subtitle.to + diff
+        return from <= currentMillisecond && to >= currentMillisecond
     })
-
-    return findSubtitle?.text
 }

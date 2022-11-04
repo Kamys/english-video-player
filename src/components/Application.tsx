@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react'
 import { VideoContainer } from './VideoContainer'
 import { SelectFile } from './SelectFile'
 import { $subtitle, SubtitleStore } from '../store/subtitle'
+import { SubtitleControl } from './SubtitleControl'
+import { Col, Container, Row } from 'react-bootstrap'
 
 export const Application = () => {
     const [videoSrc, setVideoSrc] = useState(null)
@@ -11,14 +13,29 @@ export const Application = () => {
     }, [])
 
     return (
-        <div style={{ padding: 10, width: 500 }}>
-            <SelectFile label='Выбирите видео' onSelect={setVideoSrc} />
-            <SelectFile label='Выберите субтитры en' onSelect={handleSelectSubtitle('en')} />
-            <SelectFile label='Выберите субтитры ru' onSelect={handleSelectSubtitle('ru')} />
-            {videoSrc &&
-                <VideoContainer
-                    videoSrc={videoSrc}
-                />}
-        </div>
+        <Container>
+            <Row>
+                <Col>
+                    <SelectFile label='Выбирите видео' onSelect={setVideoSrc} />
+                    <SelectFile label='Выберите субтитры en' onSelect={handleSelectSubtitle('en')} />
+                    <SelectFile label='Выберите субтитры ru' onSelect={handleSelectSubtitle('ru')} />
+                </Col>
+                <Col>
+                    {videoSrc &&
+                        <VideoContainer
+                            videoSrc={videoSrc}
+                        />
+                    }
+                </Col>
+            </Row>
+            <Row>
+                <Col md='6'>
+                    <SubtitleControl langKey='en' />
+                </Col>
+                <Col md='6'>
+                    <SubtitleControl langKey='ru' />
+                </Col>
+            </Row>
+        </Container>
     )
 }

@@ -90,3 +90,8 @@ html, body, #root {
     right: 10px;
     top: 10px;
 }
+
+.subtitle-control {
+    max-height: 400px;
+    overflow-y: scroll;
+}
