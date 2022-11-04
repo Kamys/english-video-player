@@ -1,4 +1,5 @@
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
+import dayjs from 'dayjs'
 
 export const toggleFullScreenForElement = (element: HTMLElement) => {
     if (document.fullscreenElement) {
@@ -32,9 +33,11 @@ export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff
         if (!subtitle) {
             return false
         }
-        console.log(currentMillisecond, diff)
-        const from = subtitle.from + diff
-        let to = subtitle.to + diff
-        return from <= currentMillisecond && to >= currentMillisecond
+        let currentMillisecondWithDuff = currentMillisecond + diff
+        return subtitle.from <= currentMillisecondWithDuff && subtitle.to >= currentMillisecondWithDuff
     })
+}
+
+export const toTime = (millisecond: number): string => {
+    return dayjs().startOf("day").add(millisecond, 'milliseconds').format('mm:ss')
 }

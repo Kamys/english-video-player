@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef } from 'react'
 import { useStore } from 'effector-react'
 import { $video } from '../store/video'
 import { $subtitle, SubtitleStore } from '../store/subtitle'
-import { getSubtitle } from '../utils'
+import { getSubtitle, toTime } from '../utils'
 import { Button, ListGroup } from 'react-bootstrap'
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
 import { $subtitleDiff } from '../store/subtitleDiff'
@@ -52,10 +52,11 @@ const SubtitleItem: React.FC<SubtitleItemProps> = ({ subtitle, isActive, langKey
     const { currentMillisecond } = useStore($video.store)
 
     const handleClick = useCallback(() => {
-        const diff = currentMillisecond - subtitle.from
+        const diff = subtitle.from - currentMillisecond
         console.log('diff: ', diff)
+        console.log('diff: ', toTime(currentMillisecond + diff))
         $subtitleDiff.action.setSubtitleDiff({ langKey, diff: diff })
-    }, [])
+    }, [currentMillisecond])
 
     return (
         <ListGroup.Item
@@ -63,7 +64,7 @@ const SubtitleItem: React.FC<SubtitleItemProps> = ({ subtitle, isActive, langKey
             active={isActive}
             onClick={handleClick}
         >
-            {subtitle.id}. {subtitle.text}
+            {subtitle.id}. {toTime(subtitle.from)} - {toTime(subtitle.to)} <br/> {subtitle.text}
         </ListGroup.Item>
     )
 }
