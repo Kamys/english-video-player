@@ -24,10 +24,10 @@ export const VideoContainer: React.FC<Props> = ({ videoSrc }) => {
     useEffect(() => {
         const video = videoRef.current
         if (isPlay) {
-            video.pause()
-        } else {
             video.play()
             $translate.action.onTranslate(null)
+        } else {
+            video.pause()
         }
     }, [isPlay])
 

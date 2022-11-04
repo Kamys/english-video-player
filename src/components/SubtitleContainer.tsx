@@ -27,6 +27,8 @@ export const SubtitleContainer: React.FC<Props> = () => {
         return null
     }
 
+    console.log("asd: ", isDisplayRusSubtitlesOnlyOnPause, isPlay, isDisplayRusSubtitlesOnlyOnPause ? !isPlay : true)
+
     return (
         <div className='subtitle-container'>
             {translateResult && <div className='translate'>

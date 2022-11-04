@@ -14,7 +14,6 @@ interface Props {
 export const Subtitle: FC<Props> = ({ onTranslate, currentMillisecond, isDisplay, langKey }) => {
     const store = useStore($subtitle.store)
     const subtitles = store[langKey]
-    console.log(store, langKey, subtitles)
 
     const currentText = useMemo(() => getSubtitle(subtitles, currentMillisecond), [currentMillisecond, subtitles])
 
