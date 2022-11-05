@@ -60,6 +60,6 @@ export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
 }
 
 export const ROUTS = {
-    SELECT_VIDEO: '/home',
+    SELECT_VIDEO: '/',
     VIDEO: '/video',
 }
