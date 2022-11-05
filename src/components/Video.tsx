@@ -27,7 +27,6 @@ export const Video: React.FC<Props> = ({ goToTime }) => {
 
     useEffect(() => {
         videoRef.current.currentTime = goToTime / 1000
-        console.log("goToTime", goToTime)
     }, [goToTime])
 
     useEffect(() => {

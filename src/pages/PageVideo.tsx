@@ -9,6 +9,7 @@ import { VideoControls } from '../components/VideoControls'
 import { ROUTS, toggleFullScreenForElement } from '../utils'
 import { Button, Col, Row } from 'react-bootstrap'
 import * as Icons from 'react-bootstrap-icons'
+import { SubtitleSetting } from '../components/SubtitleSetting'
 
 export const PageVideo = () => {
     const { videoSrc } = useStore($sources.store)
@@ -30,8 +31,10 @@ export const PageVideo = () => {
 
     return (
         <Row>
-            <Col>
+            <Col md="1">
                 <Button onClick={handleBack} style={{ display: 'flex' }}><Icons.ArrowLeft/></Button>
+            </Col>
+            <Col>
                 <div ref={videoContainerRef} className='video-container'>
                     <SubtitleContainer />
                     <Settings />
@@ -41,6 +44,9 @@ export const PageVideo = () => {
                     />
                     <Video goToTime={goToTime} />
                 </div>
+            </Col>
+            <Col>
+                <SubtitleSetting />
             </Col>
         </Row>
     )

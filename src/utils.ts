@@ -2,7 +2,7 @@ import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
 import dayjs from 'dayjs'
 import { $sources, SubtitleStore } from './store/sources'
 import { useStore } from 'effector-react'
-import { $subtitleDiff } from './store/subtitleDiff'
+import { $subtitle } from './store/subtitle'
 import { $video } from './store/video'
 import { useMemo } from 'react'
 
@@ -44,7 +44,7 @@ export const toTime = (millisecond: number): string => {
 }
 
 export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
-    const { subtitleDiff, subtitleIdDiff } = useStore($subtitleDiff.store)
+    const { subtitleDiff, subtitleIdDiff } = useStore($subtitle.store)
     const { currentMillisecond } = useStore($video.store)
     const { ru, en } = useStore($sources.store).subtitle
 

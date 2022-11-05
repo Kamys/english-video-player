@@ -92,6 +92,10 @@ html, body, #root {
 }
 
 .subtitle-control {
-    max-height: 400px;
     overflow-y: scroll;
+}
+
+.subtitle-item:hover {
+    background-color: dodgerblue;
+    cursor: pointer;
 }
