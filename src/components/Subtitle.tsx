@@ -1,10 +1,7 @@
-import React, { FC, useCallback, useMemo } from 'react'
+import React, { FC, useCallback } from 'react'
 import { Word } from './Word'
-import { getSubtitle, useCurrentSubtitle } from '../utils'
-import { useStore } from 'effector-react'
-import { $subtitle, SubtitleStore } from '../store/subtitle'
-import { $subtitleDiff } from '../store/subtitleDiff'
-import { $video } from '../store/video'
+import { useCurrentSubtitle } from '../utils'
+import { SubtitleStore } from '../store/sources'
 
 interface Props {
     currentMillisecond: number

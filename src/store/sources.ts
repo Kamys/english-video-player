@@ -1,4 +1,4 @@
-import { createStore } from 'effector'
+import { combine, createEvent, createStore, forward } from 'effector'
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
 import { createEffect } from 'effector/effector.umd'
 import axios from 'axios'
@@ -14,18 +14,25 @@ type LoadSubtitleParam = {
     langKey: keyof SubtitleStore
 }
 
-const loadSubtitle = createEffect<LoadSubtitleParam, Entry[]>(async (params) => {
+const onSetVideoSrc = createEvent<string>()
+const onLoadSubtitle = createEffect<LoadSubtitleParam, Entry[]>(async (params) => {
     const response = await axios.get<string>(params.link)
     const result = subtitleParser.parse(response.data)
     return result.entries
 })
 
 const subtitle = createStore<SubtitleStore>({ en: [], ru: [] })
-.on(loadSubtitle.done, (store, payload) => ({ ...store, [payload.params.langKey]: payload.result }))
+.on(onLoadSubtitle.done, (store, payload) => ({ ...store, [payload.params.langKey]: payload.result }))
 
-export const $subtitle = {
+const videoSrc = createStore<string>(null)
+forward({ from: onSetVideoSrc, to: videoSrc })
+
+const store = combine({ subtitle, videoSrc })
+
+export const $sources = {
     action: {
-        loadSubtitle,
+        onLoadSubtitle,
+        onSetVideoSrc
     },
-    store: subtitle
+    store,
 }

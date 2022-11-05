@@ -12,7 +12,9 @@ interface Props {
 const {
     onToggleDisplaySubtitles,
     onDisplayEnSubtitlesOnlyOnPause,
-    onDisplayRusSubtitlesOnlyOnPause
+    onDisplayRusSubtitlesOnlyOnPause,
+    onDisplayEnSubtitles,
+    onDisplayRusSubtitles,
 } = $settings.action
 
 const CheckBox: React.FC<Props> = ({ onChange, title, value }) => {
@@ -41,8 +43,6 @@ export const Settings: FC = () => {
         return null
     }
 
-    console.log(settings)
-
     return (
         <div className='settings'>
             <CloseButton className='button-close' onClick={() => $settings.action.onToggleShow()} />
@@ -52,6 +52,16 @@ export const Settings: FC = () => {
                     title='Показывать ли субтитры'
                     value={settings.isDisplaySubtitles}
                     onChange={onToggleDisplaySubtitles}
+                />
+                <CheckBox
+                    title='Показывать En субтитры'
+                    value={settings.isDisplayEnSubtitles}
+                    onChange={onDisplayEnSubtitles}
+                />
+                <CheckBox
+                    title='Показывать Rus субтитры'
+                    value={settings.isDisplayRusSubtitles}
+                    onChange={onDisplayRusSubtitles}
                 />
                 <CheckBox
                     title='Показывать Rus субтитры только на паузе'

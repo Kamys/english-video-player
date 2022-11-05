@@ -1,6 +1,6 @@
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
 import dayjs from 'dayjs'
-import { $subtitle, SubtitleStore } from './store/subtitle'
+import { $sources, SubtitleStore } from './store/sources'
 import { useStore } from 'effector-react'
 import { $subtitleDiff } from './store/subtitleDiff'
 import { $video } from './store/video'
@@ -8,24 +8,24 @@ import { useMemo } from 'react'
 
 export const toggleFullScreenForElement = (element: HTMLElement) => {
     if (document.fullscreenElement) {
-        document.exitFullscreen();
+        document.exitFullscreen()
         return
     }
 
     // @ts-ignore
     if (document.webkitFullscreenElement) {
         // @ts-ignore
-        document.webkitExitFullscreen();
+        document.webkitExitFullscreen()
         return
     }
 
     // @ts-ignore
     if (element.webkitRequestFullscreen) {
         // @ts-ignore
-        element.webkitRequestFullscreen();
+        element.webkitRequestFullscreen()
     } else {
         // @ts-ignore
-        element.requestFullscreen();
+        element.requestFullscreen()
     }
 }
 
@@ -40,13 +40,13 @@ export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff
 }
 
 export const toTime = (millisecond: number): string => {
-    return dayjs().startOf("day").add(millisecond, 'milliseconds').format('mm:ss')
+    return dayjs().startOf('day').add(millisecond, 'milliseconds').format('mm:ss')
 }
 
 export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
     const { subtitleDiff, subtitleIdDiff } = useStore($subtitleDiff.store)
     const { currentMillisecond } = useStore($video.store)
-    const { ru, en } = useStore($subtitle.store)
+    const { ru, en } = useStore($sources.store).subtitle
 
     return useMemo(() => {
         const currentEnSubtitle = getSubtitle(en, currentMillisecond, subtitleDiff)
@@ -57,4 +57,9 @@ export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
 
         return ru.find(s => parseInt(s.id) === ruSubtitleID)
     }, [currentMillisecond, ru, en, subtitleDiff, subtitleIdDiff])
+}
+
+export const ROUTS = {
+    SELECT_VIDEO: '/home',
+    VIDEO: '/video',
 }

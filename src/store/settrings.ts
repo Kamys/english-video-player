@@ -4,6 +4,8 @@ const onToggleShow = createEvent()
 const onToggleDisplaySubtitles = createEvent<boolean>()
 const onDisplayEnSubtitlesOnlyOnPause = createEvent<boolean>()
 const onDisplayRusSubtitlesOnlyOnPause = createEvent<boolean>()
+const onDisplayEnSubtitles = createEvent<boolean>()
+const onDisplayRusSubtitles = createEvent<boolean>()
 const isShow = createStore(false)
     .on(onToggleShow, isShow => !isShow)
 
@@ -11,12 +13,16 @@ interface SettingsStore {
     isDisplaySubtitles: boolean
     isDisplayEnSubtitlesOnlyOnPause: boolean
     isDisplayRusSubtitlesOnlyOnPause: boolean
+    isDisplayEnSubtitles: boolean
+    isDisplayRusSubtitles: boolean
 }
 
 const settings = createStore<SettingsStore>({
     isDisplaySubtitles: true,
     isDisplayEnSubtitlesOnlyOnPause: true,
     isDisplayRusSubtitlesOnlyOnPause: true,
+    isDisplayEnSubtitles: true,
+    isDisplayRusSubtitles: true,
 })
     .on(onToggleDisplaySubtitles, (settings, value) => ({
         ...settings,
@@ -30,6 +36,14 @@ const settings = createStore<SettingsStore>({
         ...settings,
         isDisplayRusSubtitlesOnlyOnPause: value
     }))
+    .on(onDisplayEnSubtitles, (settings, value) => ({
+        ...settings,
+        isDisplayEnSubtitles: value
+    }))
+    .on(onDisplayRusSubtitles, (settings, value) => ({
+        ...settings,
+        isDisplayRusSubtitles: value
+    }))
 
 export const $settings = {
     store: {
@@ -40,6 +54,8 @@ export const $settings = {
         onToggleShow,
         onToggleDisplaySubtitles,
         onDisplayEnSubtitlesOnlyOnPause,
-        onDisplayRusSubtitlesOnlyOnPause
+        onDisplayRusSubtitlesOnlyOnPause,
+        onDisplayEnSubtitles,
+        onDisplayRusSubtitles,
     },
 }

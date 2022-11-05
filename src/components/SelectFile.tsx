@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { Form } from 'react-bootstrap'
-import { VideoContainer } from './VideoContainer'
 
 interface Props {
     label: string

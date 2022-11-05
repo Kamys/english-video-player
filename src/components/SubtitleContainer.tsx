@@ -5,7 +5,8 @@ import { useStore } from 'effector-react'
 import { $settings } from '../store/settrings'
 import { $video } from '../store/video'
 
-interface Props {}
+interface Props {
+}
 
 const { onPause } = $video.action
 
@@ -16,6 +17,8 @@ export const SubtitleContainer: React.FC<Props> = () => {
         isDisplaySubtitles,
         isDisplayRusSubtitlesOnlyOnPause,
         isDisplayEnSubtitlesOnlyOnPause,
+        isDisplayEnSubtitles,
+        isDisplayRusSubtitles,
     } = useStore($settings.store.settings)
 
     const handleTranslate = useCallback((word: string) => {
@@ -40,18 +43,18 @@ export const SubtitleContainer: React.FC<Props> = () => {
                     </a>
                 </div>
             </div>}
-            <Subtitle
+            {isDisplayRusSubtitles && <Subtitle
                 isDisplay={isDisplayRusSubtitlesOnlyOnPause ? !isPlay : true}
                 onTranslate={null}
                 currentMillisecond={currentMillisecond}
                 langKey='ru'
-            />
-            <Subtitle
+            />}
+            {isDisplayEnSubtitles && <Subtitle
                 isDisplay={isDisplayEnSubtitlesOnlyOnPause ? !isPlay : true}
                 onTranslate={handleTranslate}
                 currentMillisecond={currentMillisecond}
                 langKey='en'
-            />
+            />}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import { useStore } from 'effector-react'
 import { $video } from '../store/video'
-import { $subtitle, SubtitleStore } from '../store/subtitle'
+import { $sources, SubtitleStore } from '../store/sources'
 import { toTime, useCurrentSubtitle } from '../utils'
 import { Button, ListGroup } from 'react-bootstrap'
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
@@ -14,7 +14,7 @@ interface Props {
 export const SubtitleControl: React.FC<Props> = ({ langKey }) => {
     const { currentMillisecond } = useStore($video.store)
     const diff = useStore($subtitleDiff.store)[langKey]
-    const subtitles = useStore($subtitle.store)[langKey]
+    const subtitles = useStore($sources.store).sources[langKey]
     const ref = useRef<HTMLDivElement>()
 
     const currentEntry = useCurrentSubtitle(langKey)
@@ -27,13 +27,13 @@ export const SubtitleControl: React.FC<Props> = ({ langKey }) => {
         <div>
             <Button onClick={handleScroll}>Scroll to current</Button>
             <div>currentMillisecond: {toTime(currentMillisecond)} {toTime(currentMillisecond+diff)}</div>
-            <ListGroup className='subtitle-control' ref={ref} style={{ maxHeight: 300 }}>
-                {subtitles.map((subtitle) => (
+            <ListGroup className='sources-control' ref={ref} style={{ maxHeight: 300 }}>
+                {subtitles.map((sources) => (
                     <SubtitleItem
-                        key={subtitle.id}
+                        key={sources.id}
                         langKey={langKey}
-                        subtitle={subtitle}
-                        isActive={subtitle.id === currentEntry?.id}
+                        sources={sources}
+                        isActive={sources.id === currentEntry?.id}
                     />
                 ))}
             </ListGroup>
@@ -42,18 +42,18 @@ export const SubtitleControl: React.FC<Props> = ({ langKey }) => {
 }
 
 interface SubtitleItemProps {
-    subtitle: Entry
+    sources: Entry
     isActive: boolean
     langKey: keyof SubtitleStore
 }
 
-const SubtitleItem: React.FC<SubtitleItemProps> = ({ subtitle, isActive, langKey }) => {
+const SubtitleItem: React.FC<SubtitleItemProps> = ({ sources, isActive, langKey }) => {
     const ref = useRef<HTMLAnchorElement>()
     const { currentMillisecond } = useStore($video.store)
     const currentSubtitleEn = useCurrentSubtitle('en')
 
     const handleSecondSubtitleId = useCallback(() => {
-        const diffId = parseInt(subtitle.id) - parseInt(currentSubtitleEn?.id)
+        const diffId = parseInt(sources.id) - parseInt(currentSubtitleEn?.id)
         console.log(diffId)
         $subtitleDiff.action.setSubtitleIdDiff(diffId)
     }, [currentSubtitleEn])
@@ -63,7 +63,7 @@ const SubtitleItem: React.FC<SubtitleItemProps> = ({ subtitle, isActive, langKey
         if (langKey === 'ru') {
             return
         }
-        const diff = subtitle.from - currentMillisecond
+        const diff = sources.from - currentMillisecond
         $subtitleDiff.action.setSubtitleDiff(diff)
     }, [currentMillisecond, langKey])
 
@@ -73,7 +73,7 @@ const SubtitleItem: React.FC<SubtitleItemProps> = ({ subtitle, isActive, langKey
             active={isActive}
             onClick={handleClick}
         >
-            {subtitle.id}. {toTime(subtitle.from)} - {toTime(subtitle.to)} <br/> {subtitle.text}
+            {sources.id}. {toTime(sources.from)} - {toTime(sources.to)} <br/> {sources.text}
         </ListGroup.Item>
     )
 }
