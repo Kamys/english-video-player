@@ -1,23 +1,20 @@
-import { createEvent, createStore } from 'effector'
+import { combine, createEvent, createStore } from 'effector'
 
-interface SubtitleDiffStore {
-    ru: number,
-    en: number,
-}
+const setSubtitleDiff = createEvent<number>()
+const setSubtitleIdDiff = createEvent<number>()
 
-type SetSubtitleDiffParams = {
-    diff: number,
-    langKey: keyof SubtitleDiffStore
-}
+const subtitleDiff = createStore(0)
+.on(setSubtitleDiff, (store, payload) => payload)
 
-const setSubtitleDiff = createEvent<SetSubtitleDiffParams>()
+const subtitleIdDiff = createStore(0)
+    .on(setSubtitleIdDiff, (store, payload) => payload)
 
-const subtitle = createStore<SubtitleDiffStore>({ en: 0, ru: 0 })
-.on(setSubtitleDiff, (store, payload) => ({ ...store, [payload.langKey]: payload.diff }))
+const store = combine({ subtitleDiff, subtitleIdDiff })
 
 export const $subtitleDiff = {
     action: {
         setSubtitleDiff,
+        setSubtitleIdDiff,
     },
-    store: subtitle
+    store: store
 }

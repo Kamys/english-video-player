@@ -16,9 +16,9 @@ export const Application = () => {
         <Container>
             <Row>
                 <Col>
-                    <SelectFile label='Выбирите видео' onSelect={setVideoSrc} />
-                    <SelectFile label='Выберите субтитры en' onSelect={handleSelectSubtitle('en')} />
-                    <SelectFile label='Выберите субтитры ru' onSelect={handleSelectSubtitle('ru')} />
+                    <SelectFile label='Выбирите видео' accept="video/mp4,video/x-m4v,video/*,.mkv" onSelect={setVideoSrc} />
+                    <SelectFile label='Выберите субтитры en' accept=".vtt,.srt" onSelect={handleSelectSubtitle('en')} />
+                    <SelectFile label='Выберите субтитры ru' accept=".vtt,.srt" onSelect={handleSelectSubtitle('ru')} />
                 </Col>
                 <Col>
                     {videoSrc &&

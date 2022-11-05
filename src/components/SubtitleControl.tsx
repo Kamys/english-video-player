@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { useStore } from 'effector-react'
 import { $video } from '../store/video'
 import { $subtitle, SubtitleStore } from '../store/subtitle'
-import { getSubtitle, toTime } from '../utils'
+import { toTime, useCurrentSubtitle } from '../utils'
 import { Button, ListGroup } from 'react-bootstrap'
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
 import { $subtitleDiff } from '../store/subtitleDiff'
@@ -17,8 +17,7 @@ export const SubtitleControl: React.FC<Props> = ({ langKey }) => {
     const subtitles = useStore($subtitle.store)[langKey]
     const ref = useRef<HTMLDivElement>()
 
-    const currentEntry = useMemo(() => getSubtitle(subtitles, currentMillisecond, diff),
-        [currentMillisecond, subtitles, diff])
+    const currentEntry = useCurrentSubtitle(langKey)
     const handleScroll = useCallback(() => {
         const index = subtitles.findIndex(s => s.id === currentEntry?.id)
         ref.current.children[index]?.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
@@ -27,6 +26,7 @@ export const SubtitleControl: React.FC<Props> = ({ langKey }) => {
     return (
         <div>
             <Button onClick={handleScroll}>Scroll to current</Button>
+            <div>currentMillisecond: {toTime(currentMillisecond)} {toTime(currentMillisecond+diff)}</div>
             <ListGroup className='subtitle-control' ref={ref} style={{ maxHeight: 300 }}>
                 {subtitles.map((subtitle) => (
                     <SubtitleItem
@@ -50,13 +50,22 @@ interface SubtitleItemProps {
 const SubtitleItem: React.FC<SubtitleItemProps> = ({ subtitle, isActive, langKey }) => {
     const ref = useRef<HTMLAnchorElement>()
     const { currentMillisecond } = useStore($video.store)
+    const currentSubtitleEn = useCurrentSubtitle('en')
+
+    const handleSecondSubtitleId = useCallback(() => {
+        const diffId = parseInt(subtitle.id) - parseInt(currentSubtitleEn?.id)
+        console.log(diffId)
+        $subtitleDiff.action.setSubtitleIdDiff(diffId)
+    }, [currentSubtitleEn])
 
     const handleClick = useCallback(() => {
+        handleSecondSubtitleId()
+        if (langKey === 'ru') {
+            return
+        }
         const diff = subtitle.from - currentMillisecond
-        console.log('diff: ', diff)
-        console.log('diff: ', toTime(currentMillisecond + diff))
-        $subtitleDiff.action.setSubtitleDiff({ langKey, diff: diff })
-    }, [currentMillisecond])
+        $subtitleDiff.action.setSubtitleDiff(diff)
+    }, [currentMillisecond, langKey])
 
     return (
         <ListGroup.Item

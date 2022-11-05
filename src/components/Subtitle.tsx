@@ -1,23 +1,23 @@
 import React, { FC, useCallback, useMemo } from 'react'
 import { Word } from './Word'
-import { getSubtitleText } from '../utils'
+import { getSubtitle, useCurrentSubtitle } from '../utils'
 import { useStore } from 'effector-react'
 import { $subtitle, SubtitleStore } from '../store/subtitle'
 import { $subtitleDiff } from '../store/subtitleDiff'
+import { $video } from '../store/video'
 
 interface Props {
     currentMillisecond: number
     isDisplay: boolean
+
     onTranslate(word: string)
+
     langKey: keyof SubtitleStore
+    second?: boolean
 }
 
-export const Subtitle: FC<Props> = ({ onTranslate, currentMillisecond, isDisplay, langKey }) => {
-    const store = useStore($subtitle.store)
-    const diff = useStore($subtitleDiff.store)[langKey]
-    const subtitles = store[langKey]
-
-    const currentText = useMemo(() => getSubtitleText(subtitles, currentMillisecond, diff), [currentMillisecond, subtitles, diff])
+export const Subtitle: FC<Props> = ({ onTranslate, isDisplay, langKey }) => {
+    const currentText = useCurrentSubtitle(langKey)?.text
 
     const handleClick = useCallback((data) => (e) => {
         e.stopPropagation()

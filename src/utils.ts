@@ -1,5 +1,10 @@
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
 import dayjs from 'dayjs'
+import { $subtitle, SubtitleStore } from './store/subtitle'
+import { useStore } from 'effector-react'
+import { $subtitleDiff } from './store/subtitleDiff'
+import { $video } from './store/video'
+import { useMemo } from 'react'
 
 export const toggleFullScreenForElement = (element: HTMLElement) => {
     if (document.fullscreenElement) {
@@ -24,10 +29,6 @@ export const toggleFullScreenForElement = (element: HTMLElement) => {
     }
 }
 
-export const getSubtitleText = (subtitles: Entry[], currentMillisecond: number, diff: number) => {
-    return getSubtitle(subtitles, currentMillisecond, diff)?.text
-}
-
 export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff: number) => {
     return subtitles.find(subtitle => {
         if (!subtitle) {
@@ -40,4 +41,20 @@ export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff
 
 export const toTime = (millisecond: number): string => {
     return dayjs().startOf("day").add(millisecond, 'milliseconds').format('mm:ss')
+}
+
+export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
+    const { subtitleDiff, subtitleIdDiff } = useStore($subtitleDiff.store)
+    const { currentMillisecond } = useStore($video.store)
+    const { ru, en } = useStore($subtitle.store)
+
+    return useMemo(() => {
+        const currentEnSubtitle = getSubtitle(en, currentMillisecond, subtitleDiff)
+        if (langKey === 'en') {
+            return currentEnSubtitle
+        }
+        const ruSubtitleID = parseInt(currentEnSubtitle?.id) + subtitleIdDiff
+
+        return ru.find(s => parseInt(s.id) === ruSubtitleID)
+    }, [currentMillisecond, ru, en, subtitleDiff, subtitleIdDiff])
 }

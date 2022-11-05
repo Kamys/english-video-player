@@ -4,10 +4,11 @@ import { VideoContainer } from './VideoContainer'
 
 interface Props {
     label: string
+    accept: string
     onSelect: (fileSrc: string) => void
 }
 
-export const SelectFile: React.FC<Props> = ({ label, onSelect }) => {
+export const SelectFile: React.FC<Props> = ({ label, accept, onSelect }) => {
     const handleChange = useCallback((e) => {
         onSelect(URL.createObjectURL(e.currentTarget.files[0]))
     }, [])
@@ -15,7 +16,7 @@ export const SelectFile: React.FC<Props> = ({ label, onSelect }) => {
     return (
         <Form.Group controlId="formFile" className="mb-3">
             <Form.Label>{label}</Form.Label>
-            <Form.Control onChange={handleChange} type="file" />
+            <Form.Control accept={accept} onChange={handleChange} type="file" />
         </Form.Group>
     )
 }
