@@ -37,6 +37,14 @@ export const PageSelectVideo = () => {
                </Col>
            </Row>
            <Row>
+               <p>
+                   Субтитры можно найти на сайте{" "}
+                   <a target="_blank" href='https://www.opensubtitles.org/ru/search/sublanguageid-rus,eng'>
+                       Open Subtitles
+                   </a>
+               </p>
+           </Row>
+           <Row>
                <Button onClick={handleNext} disabled={!videoSrc}>Продолжить</Button>
            </Row>
        </>
