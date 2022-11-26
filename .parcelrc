@@ -1,6 +1,0 @@
-{
-    "extends": "@parcel/config-default",
-    "transformers": {
-        "*.{mp4,mkv,srt,vtt}": ["@parcel/transformer-raw"]
-    }
-}
