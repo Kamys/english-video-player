@@ -3,6 +3,7 @@ import { useStore } from 'effector-react'
 import { $sources } from '../store/sources'
 import { $video } from '../store/video'
 import { $translate } from '../store/translate'
+import { getLastSub, getNextSub } from '../utils'
 
 const { setCurrentMillisecond, setDuration, onTogglePlay } = $video.action
 
@@ -11,16 +12,19 @@ interface Props {
 }
 
 const useMove = (videoRef: MutableRefObject<HTMLVideoElement>) => {
+
+
     useEffect(() => {
         const onKeydown = (event) => {
             const isArrowRight = event.key === "ArrowRight" || event.code === "ArrowRight" || event.keyCode === 39
             const isArrowLeft = event.key === "ArrowLeft" || event.code === "ArrowLeft" || event.keyCode === 37
 
             if (isArrowRight) {
-                videoRef.current.currentTime = videoRef.current.currentTime + 10
+                let nextSub = getNextSub(videoRef.current.currentTime * 1000)
+                videoRef.current.currentTime = nextSub / 1000
             }
             if (isArrowLeft) {
-                videoRef.current.currentTime = videoRef.current.currentTime - 10
+                videoRef.current.currentTime = getLastSub(videoRef.current.currentTime * 1000) / 1000
             }
         }
         window.addEventListener('keydown', onKeydown)

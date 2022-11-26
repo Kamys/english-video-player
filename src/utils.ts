@@ -29,7 +29,7 @@ export const toggleFullScreenForElement = (element: HTMLElement) => {
     }
 }
 
-export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff: number) => {
+export const getSubtitle = (subtitles: Entry[], currentMillisecond: number, diff: number): Entry => {
     return subtitles.find(subtitle => {
         if (!subtitle) {
             return false
@@ -43,20 +43,42 @@ export const toTime = (millisecond: number): string => {
     return dayjs().startOf('day').add(millisecond, 'milliseconds').format('mm:ss')
 }
 
+export const toMinute = (millisecond: number): number => {
+    return toSecond(millisecond) / 60
+}
+
+
+export const toSecond = (millisecond: number): number => {
+    return millisecond / 1000
+}
+
+export const getNextSub = (currentTimeMilliseconds: number): number => {
+    const subtitle = $sources.store.getState().subtitle.en
+    const timeCods = subtitle.map(item => item.from)
+    const sort = timeCods.filter(timeCod => timeCod > currentTimeMilliseconds).sort((a, b) => a - b)
+    return sort[0]
+}
+
+export const getLastSub = (currentTimeMilliseconds: number): number => {
+    const subtitle = $sources.store.getState().subtitle.en
+    const currentSubtitle = getSubtitle(subtitle, currentTimeMilliseconds, 0)
+    let currentTime = currentTimeMilliseconds
+    if (currentSubtitle != null) {
+        currentTime = currentSubtitle.from - 1
+    }
+    const timeCods = subtitle.map(item => item.from)
+    const sort = timeCods.filter(timeCod => timeCod < currentTime).sort((a, b) => a - b).reverse()
+    return sort[0]
+}
+
 export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
     const { subtitleDiff, subtitleIdDiff } = useStore($subtitle.store)
     const { currentMillisecond } = useStore($video.store)
-    const { ru, en } = useStore($sources.store).subtitle
+    const subtitle = useStore($sources.store).subtitle[langKey]
 
     return useMemo(() => {
-        const currentEnSubtitle = getSubtitle(en, currentMillisecond, subtitleDiff)
-        if (langKey === 'en') {
-            return currentEnSubtitle
-        }
-        const ruSubtitleID = parseInt(currentEnSubtitle?.id) + subtitleIdDiff
-
-        return ru.find(s => parseInt(s.id) === ruSubtitleID)
-    }, [currentMillisecond, ru, en, subtitleDiff, subtitleIdDiff])
+        return getSubtitle(subtitle, currentMillisecond, subtitleDiff)
+    }, [currentMillisecond, subtitle, subtitleDiff, subtitleIdDiff])
 }
 
 export const ROUTS = {
