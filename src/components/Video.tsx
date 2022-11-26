@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react'
 import { useStore } from 'effector-react'
 import { $sources } from '../store/sources'
 import { $video } from '../store/video'
@@ -8,6 +8,25 @@ const { setCurrentMillisecond, setDuration, onTogglePlay } = $video.action
 
 interface Props {
     goToTime: number
+}
+
+const useMove = (videoRef: MutableRefObject<HTMLVideoElement>) => {
+    useEffect(() => {
+        const onKeydown = (event) => {
+            const isArrowRight = event.key === "ArrowRight" || event.code === "ArrowRight" || event.keyCode === 39
+            const isArrowLeft = event.key === "ArrowLeft" || event.code === "ArrowLeft" || event.keyCode === 37
+
+            if (isArrowRight) {
+                videoRef.current.currentTime = videoRef.current.currentTime + 10
+            }
+            if (isArrowLeft) {
+                videoRef.current.currentTime = videoRef.current.currentTime - 10
+            }
+        }
+        window.addEventListener('keydown', onKeydown)
+
+        return () => window.removeEventListener('keydown', onKeydown)
+    }, [])
 }
 
 export const Video: React.FC<Props> = ({ goToTime }) => {
@@ -40,6 +59,8 @@ export const Video: React.FC<Props> = ({ goToTime }) => {
 
         return () => current.removeEventListener('timeupdate', onTimeupdate)
     }, [])
+
+    useMove(videoRef)
 
     useEffect(() => {
         const onKeydown = (event) => {
