@@ -46,9 +46,9 @@ html, body, #root {
   width: 100%;
   height: 50px;
   background-color: #00000070;
-  grid-template-columns: 5% 85% 5% 5%;
-  grid-template-areas: "progress-bar progress-bar progress-bar progress-bar"
-                       "play space setting full-screan";
+  grid-template-columns: .1fr 1fr 1fr;
+  grid-template-areas: "progress-bar progress-bar progress-bar"
+                       "play space controls2";
   gap: 0;
   padding: 2px;
   display: grid;
@@ -96,6 +96,11 @@ html, body, #root {
 .subtitle-item:hover {
   cursor: pointer;
   background-color: #1e90ff;
+}
+
+.btn {
+  color: #fff !important;
+  border: none !important;
 }
 
 :root {
