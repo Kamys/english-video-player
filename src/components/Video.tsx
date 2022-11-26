@@ -4,6 +4,7 @@ import { $sources } from '../store/sources'
 import { $video } from '../store/video'
 import { $translate } from '../store/translate'
 import { getLastSub, getNextSub } from '../utils'
+import { $interfaceActivity } from '../store/interfaceActivity'
 
 const { setCurrentMillisecond, setDuration, onTogglePlay } = $video.action
 
@@ -71,6 +72,7 @@ export const Video: React.FC<Props> = ({ goToTime }) => {
             const isSpace = event.key === ' ' ||  event.code === 'Space' || event.keyCode === 32
             if (isSpace) {
                 onTogglePlay()
+                $interfaceActivity.action.onUserActivity()
                 event.preventDefault()
                 event.stopPropagation()
             }

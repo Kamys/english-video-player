@@ -6,7 +6,7 @@ import { SubtitleContainer } from '../components/SubtitleContainer'
 import { Settings } from '../components/Settings'
 import { Video } from '../components/Video'
 import { VideoControls } from '../components/VideoControls'
-import { ROUTS, toggleFullScreenForElement } from '../utils'
+import { ROUTS, toggleFullScreenForElement, useActivity } from '../utils'
 import { Button, Col, Row } from 'react-bootstrap'
 import * as Icons from 'react-bootstrap-icons'
 import { SubtitleSetting } from '../components/SubtitleSetting'
@@ -24,6 +24,8 @@ export const PageVideo = () => {
     const handleBack = useCallback(() => {
         $sources.action.onSetVideoSrc(null)
     }, [])
+
+    useActivity()
 
     if (!videoSrc) {
         return <Navigate replace to={ROUTS.SELECT_VIDEO} />

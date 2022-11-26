@@ -4,7 +4,8 @@ import { $sources, SubtitleStore } from './store/sources'
 import { useStore } from 'effector-react'
 import { $subtitle } from './store/subtitle'
 import { $video } from './store/video'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import { $interfaceActivity } from './store/interfaceActivity'
 
 export const toggleFullScreenForElement = (element: HTMLElement) => {
     if (document.fullscreenElement) {
@@ -79,6 +80,25 @@ export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
     return useMemo(() => {
         return getSubtitle(subtitle, currentMillisecond, subtitleDiff)
     }, [currentMillisecond, subtitle, subtitleDiff, subtitleIdDiff])
+}
+
+export const useActivity = () => {
+    const isPlay = useStore($video.store).isPlay
+
+    useEffect(() => {
+        const onUserActivity = (e) => {
+            console.log(e)
+            $interfaceActivity.action.onUserActivity()
+        }
+
+        window.addEventListener("mousemove", onUserActivity)
+        window.addEventListener("keydown", onUserActivity)
+
+        return () => {
+            window.removeEventListener("mousemove", onUserActivity)
+            window.removeEventListener("keydown", onUserActivity)
+        }
+    }, [isPlay])
 }
 
 export const ROUTS = {

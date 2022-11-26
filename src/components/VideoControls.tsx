@@ -4,6 +4,7 @@ import * as Icon from 'react-bootstrap-icons'
 import { $settings } from '../store/settrings'
 import { useStore } from 'effector-react'
 import { $video } from '../store/video'
+import { $interfaceActivity } from '../store/interfaceActivity'
 
 const { onTogglePlay } = $video.action
 
@@ -16,6 +17,7 @@ const { onToggleShow, onToggleSubtitleState } = $settings.action
 
 export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScreen }) => {
     const { isPlay, currentMillisecond, duration } = useStore($video.store)
+    const isInterfaceActivity = useStore($interfaceActivity.store)
     const { foreign, native } = useStore($settings.store.settings)
 
     const handleClickProgressBar = useCallback((event: React.MouseEvent) => {
@@ -34,6 +36,10 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
         onTogglePlay()
     }, [])
 
+    if (!isInterfaceActivity) {
+        return <div></div>
+    }
+
     return (
         <div className='video-controls'>
             <ProgressBar
@@ -51,9 +57,6 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
                 </Button>
                 <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState("native")}>
                     Native: {native}
-                </Button>
-                <Button size='sm' variant='outline-dark' onClick={() => onToggleShow()}>
-                    <Icon.Gear color='white' />
                 </Button>
                 <Button className='pl-1' size='sm' variant='outline-dark' onClick={onToggleFullScreen}>
                     <Icon.ArrowsFullscreen color='white' />
