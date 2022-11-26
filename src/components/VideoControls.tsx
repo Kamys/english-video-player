@@ -12,8 +12,11 @@ interface Props {
     onMoveVideoTo: (time: number) => void
 }
 
+const { onToggleShow, onToggleSubtitleState } = $settings.action
+
 export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScreen }) => {
     const { isPlay, currentMillisecond, duration } = useStore($video.store)
+    const { foreign, native } = useStore($settings.store.settings)
 
     const handleClickProgressBar = useCallback((event: React.MouseEvent) => {
         const rect = event.currentTarget.getBoundingClientRect()
@@ -42,12 +45,20 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
                 {isPlay ? <Icon.Stop color='white' /> : <Icon.Play color='white' />}
             </Button>
             <div></div>
-            <Button size='sm' variant='outline-dark' onClick={() => $settings.action.onToggleShow()}>
-                <Icon.Gear color='white' />
-            </Button>
-            <Button className='pl-1' size='sm' variant='outline-dark' onClick={onToggleFullScreen}>
-                <Icon.ArrowsFullscreen color='white' />
-            </Button>
+            <div style={{ display: "flex", justifyContent: 'right'}}>
+                <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState("foreign")}>
+                    Foreign: {foreign}
+                </Button>
+                <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState("native")}>
+                    Native: {native}
+                </Button>
+                <Button size='sm' variant='outline-dark' onClick={() => onToggleShow()}>
+                    <Icon.Gear color='white' />
+                </Button>
+                <Button className='pl-1' size='sm' variant='outline-dark' onClick={onToggleFullScreen}>
+                    <Icon.ArrowsFullscreen color='white' />
+                </Button>
+            </div>
         </div>
     )
 }

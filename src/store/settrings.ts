@@ -1,48 +1,37 @@
 import { createEvent, createStore } from 'effector'
 
 const onToggleShow = createEvent()
-const onToggleDisplaySubtitles = createEvent<boolean>()
-const onDisplayEnSubtitlesOnlyOnPause = createEvent<boolean>()
-const onDisplayRusSubtitlesOnlyOnPause = createEvent<boolean>()
-const onDisplayEnSubtitles = createEvent<boolean>()
-const onDisplayRusSubtitles = createEvent<boolean>()
+const onToggleSubtitleState = createEvent<keyof SettingsStore>()
 const isShow = createStore(false)
     .on(onToggleShow, isShow => !isShow)
 
+export enum SubtitleState {
+    Never = "Never",
+    Pause = "Pause",
+    Always = "Always",
+}
+
+const getNextSubtitleState = (current: SubtitleState): SubtitleState => {
+    let values = Object.values(SubtitleState)
+    const nextIndex = values.indexOf(current) + 1
+    if (nextIndex >= values.length) {
+        return values[0]
+    }
+    return values[nextIndex]
+}
+
 interface SettingsStore {
-    isDisplaySubtitles: boolean
-    isDisplayEnSubtitlesOnlyOnPause: boolean
-    isDisplayRusSubtitlesOnlyOnPause: boolean
-    isDisplayEnSubtitles: boolean
-    isDisplayRusSubtitles: boolean
+    foreign: SubtitleState,
+    native: SubtitleState,
 }
 
 const settings = createStore<SettingsStore>({
-    isDisplaySubtitles: true,
-    isDisplayEnSubtitlesOnlyOnPause: true,
-    isDisplayRusSubtitlesOnlyOnPause: true,
-    isDisplayEnSubtitles: true,
-    isDisplayRusSubtitles: true,
+    foreign: SubtitleState.Pause,
+    native: SubtitleState.Pause,
 })
-    .on(onToggleDisplaySubtitles, (settings, value) => ({
+    .on(onToggleSubtitleState, (settings, value) => ({
         ...settings,
-        isDisplaySubtitles: value
-    }))
-    .on(onDisplayEnSubtitlesOnlyOnPause, (settings, value) => ({
-        ...settings,
-        isDisplayEnSubtitlesOnlyOnPause: value
-    }))
-    .on(onDisplayRusSubtitlesOnlyOnPause, (settings, value) => ({
-        ...settings,
-        isDisplayRusSubtitlesOnlyOnPause: value
-    }))
-    .on(onDisplayEnSubtitles, (settings, value) => ({
-        ...settings,
-        isDisplayEnSubtitles: value
-    }))
-    .on(onDisplayRusSubtitles, (settings, value) => ({
-        ...settings,
-        isDisplayRusSubtitles: value
+        [value]: getNextSubtitleState(settings[value])
     }))
 
 export const $settings = {
@@ -52,10 +41,6 @@ export const $settings = {
     },
     action: {
         onToggleShow,
-        onToggleDisplaySubtitles,
-        onDisplayEnSubtitlesOnlyOnPause,
-        onDisplayRusSubtitlesOnlyOnPause,
-        onDisplayEnSubtitles,
-        onDisplayRusSubtitles,
+        onToggleSubtitleState,
     },
 }

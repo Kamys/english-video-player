@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Subtitle } from './Subtitle'
 import { $translate } from '../store/translate'
 import { useStore } from 'effector-react'
-import { $settings } from '../store/settrings'
+import { $settings, SubtitleState } from '../store/settrings'
 import { $video } from '../store/video'
 
 interface Props {
@@ -13,22 +13,12 @@ const { onPause } = $video.action
 export const SubtitleContainer: React.FC<Props> = () => {
     const { currentMillisecond, isPlay } = useStore($video.store)
     const { translateResult, textForTranslate } = useStore($translate.store)
-    const {
-        isDisplaySubtitles,
-        isDisplayRusSubtitlesOnlyOnPause,
-        isDisplayEnSubtitlesOnlyOnPause,
-        isDisplayEnSubtitles,
-        isDisplayRusSubtitles,
-    } = useStore($settings.store.settings)
+    const { foreign, native } = useStore($settings.store.settings)
 
     const handleTranslate = useCallback((word: string) => {
         onPause()
         $translate.action.onTranslate(word)
     }, [onPause])
-
-    if (!isDisplaySubtitles) {
-        return null
-    }
 
     return (
         <div className='subtitle-container'>
@@ -43,14 +33,14 @@ export const SubtitleContainer: React.FC<Props> = () => {
                     </a>
                 </div>
             </div>}
-            {isDisplayRusSubtitles && <Subtitle
-                isDisplay={isDisplayRusSubtitlesOnlyOnPause ? !isPlay : true}
+            {native != SubtitleState.Never && <Subtitle
+                isDisplay={native === SubtitleState.Pause ? !isPlay : true}
                 onTranslate={null}
                 currentMillisecond={currentMillisecond}
                 langKey='ru'
             />}
-            {isDisplayEnSubtitles && <Subtitle
-                isDisplay={isDisplayEnSubtitlesOnlyOnPause ? !isPlay : true}
+            {foreign != SubtitleState.Never && <Subtitle
+                isDisplay={foreign === SubtitleState.Pause ? !isPlay : true}
                 onTranslate={handleTranslate}
                 currentMillisecond={currentMillisecond}
                 langKey='en'
