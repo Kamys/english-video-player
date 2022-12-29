@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import { SubtitleControl } from './SubtitleControl'
-import { SubtitleStore } from '../store/sources'
+import { SubtitleStore } from '../../store/sources'
 
-export const SubtitleSetting = () => {
+export const SubtitleAdjustment = () => {
     const [isShow, setIsShow]  = useState(false)
     const [langKey, setLangKey]  = useState<keyof SubtitleStore>("en")
 

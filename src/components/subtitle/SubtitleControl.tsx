@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useStore } from 'effector-react'
-import { $video } from '../store/video'
-import { $sources, SubtitleStore } from '../store/sources'
-import { toTime, useCurrentSubtitle } from '../utils'
+import { $video } from '../../store/video'
+import { $sources, SubtitleStore } from '../../store/sources'
+import { toTime, useCurrentSubtitle } from '../../utils'
 import { ListGroup } from 'react-bootstrap'
 import { Entry } from '@plussub/srt-vtt-parser/dist/src/types'
-import { $subtitle } from '../store/subtitle'
+import { $subtitle } from '../../store/subtitle'
 
 interface Props {
     langKey: keyof SubtitleStore

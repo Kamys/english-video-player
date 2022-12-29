@@ -86,8 +86,7 @@ export const useActivity = () => {
     const isPlay = useStore($video.store).isPlay
 
     useEffect(() => {
-        const onUserActivity = (e) => {
-            console.log(e)
+        const onUserActivity = () => {
             $interfaceActivity.action.onUserActivity()
         }
 

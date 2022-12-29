@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react'
-import { Word } from './Word'
-import { useCurrentSubtitle } from '../utils'
-import { SubtitleStore } from '../store/sources'
+import { Word } from '../Word'
+import { useCurrentSubtitle } from '../../utils'
+import { SubtitleStore } from '../../store/sources'
 
 interface Props {
     currentMillisecond: number

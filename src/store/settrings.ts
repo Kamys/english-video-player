@@ -20,7 +20,7 @@ const getNextSubtitleState = (current: SubtitleState): SubtitleState => {
     return values[nextIndex]
 }
 
-interface SettingsStore {
+export interface SettingsStore {
     foreign: SubtitleState,
     native: SubtitleState,
 }
