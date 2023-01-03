@@ -54,11 +54,12 @@ html, body, #root {
     height: 50px;
 
     display: grid;
-    grid-template-columns: 0.1fr 1fr 1fr;
+    grid-template-columns: 0.1fr 0.1fr 0.4fr 1fr 1fr;
     gap: 0 0;
     grid-template-areas:
-            "progress-bar progress-bar progress-bar"
-            "play space controls2";
+            "progress-bar progress-bar progress-bar progress-bar progress-bar"
+            "play volume volume-bar space controls2";
+    align-items: center;
 }
 
 .video {

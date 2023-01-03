@@ -36,7 +36,7 @@ const useMove = (videoRef: MutableRefObject<HTMLVideoElement>) => {
 
 export const Video: React.FC<Props> = ({ goToTime }) => {
     const videoRef = useRef<HTMLVideoElement>()
-    const { isPlay  } = useStore($video.store)
+    const { isPlay, volume } = useStore($video.store)
     const { videoSrc } = useStore($sources.store)
 
     useEffect(() => {
@@ -52,6 +52,10 @@ export const Video: React.FC<Props> = ({ goToTime }) => {
     useEffect(() => {
         videoRef.current.currentTime = goToTime / 1000
     }, [goToTime])
+
+    useEffect(() => {
+        videoRef.current.volume = volume
+    }, [volume])
 
     useEffect(() => {
         let current = videoRef.current

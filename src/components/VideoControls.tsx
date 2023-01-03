@@ -6,17 +6,21 @@ import { useStore } from 'effector-react'
 import { $video } from '../store/video'
 import { $interfaceActivity } from '../store/interfaceActivity'
 
-const { onTogglePlay } = $video.action
 
 interface Props {
     onToggleFullScreen: () => void
     onMoveVideoTo: (time: number) => void
 }
 
-const { onToggleShow, onToggleSubtitleState } = $settings.action
+const { onTogglePlay, setVolume } = $video.action
+const { onToggleSubtitleState } = $settings.action
+
+const zeroOrMore = (number: number) => {
+    return number < 0 ? 0 : number
+}
 
 export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScreen }) => {
-    const { isPlay, currentMillisecond, duration } = useStore($video.store)
+    const { isPlay, currentMillisecond, duration, volume } = useStore($video.store)
     const isInterfaceActivity = useStore($interfaceActivity.store)
     const { foreign, native } = useStore($settings.store.settings)
 
@@ -27,6 +31,14 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
         onMoveVideoTo((duration / 100) * percent)
     }, [duration])
 
+    const handleClickVolumeBar = useCallback((event: React.MouseEvent) => {
+        const rect = event.currentTarget.getBoundingClientRect()
+        const x = event.clientX - rect.left
+        const percent = x / (event.currentTarget.clientWidth / 100)
+        const newVolume = zeroOrMore(percent / 100)
+        setVolume(newVolume)
+    }, [])
+
     const watchPoint = useMemo(() => {
         const onePercent = duration / 100
         return currentMillisecond / onePercent
@@ -35,6 +47,14 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
     const handleTogglePlay = useCallback(() => {
         onTogglePlay()
     }, [])
+
+    const handleToggleVolume = useCallback(() => {
+        if (volume === 0) {
+            setVolume(0.5)
+        } else {
+            setVolume(0)
+        }
+    }, [volume])
 
     if (!isInterfaceActivity) {
         return <div></div>
@@ -50,12 +70,20 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
             <Button size='sm' variant='outline-dark' onClick={handleTogglePlay}>
                 {isPlay ? <Icon.Stop color='white' /> : <Icon.Play color='white' />}
             </Button>
+            <Button size='sm' variant='outline-dark' onClick={handleToggleVolume}>
+                {volume === 0 ? <Icon.VolumeMute color='white' /> : <Icon.VolumeDown color='white' />}
+            </Button>
+            <ProgressBar
+                onClick={handleClickVolumeBar}
+                style={{ cursor: 'pointer' }}
+                now={volume * 100}
+            />
             <div></div>
-            <div style={{ display: "flex", justifyContent: 'right'}}>
-                <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState("foreign")}>
+            <div style={{ display: 'flex', justifyContent: 'right' }}>
+                <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState('foreign')}>
                     Foreign: {foreign}
                 </Button>
-                <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState("native")}>
+                <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState('native')}>
                     Native: {native}
                 </Button>
                 <Button className='pl-1' size='sm' variant='outline-dark' onClick={onToggleFullScreen}>
