@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo } from 'react'
-import { Button, ProgressBar } from 'react-bootstrap'
+import { Button, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap'
 import * as Icon from 'react-bootstrap-icons'
 import { $settings } from '../store/settrings'
 import { useStore } from 'effector-react'
 import { $video } from '../store/video'
 import { $interfaceActivity } from '../store/interfaceActivity'
+import { toTime } from '../utils'
 
 
 interface Props {
@@ -78,6 +79,7 @@ export const VideoControls: React.FC<Props> = ({ onMoveVideoTo, onToggleFullScre
                 style={{ cursor: 'pointer' }}
                 now={volume * 100}
             />
+            <div className="video-time">{toTime(currentMillisecond)}</div>
             <div></div>
             <div style={{ display: 'flex', justifyContent: 'right' }}>
                 <Button size='sm' variant='outline-dark' onClick={() => onToggleSubtitleState('foreign')}>
