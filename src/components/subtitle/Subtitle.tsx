@@ -19,7 +19,7 @@ export const Subtitle: FC<Props> = ({ onTranslate, isDisplay, langKey }) => {
     const handleClick = useCallback((data) => (e) => {
         e.stopPropagation()
         e.preventDefault()
-        onTranslate(data
+        onTranslate && onTranslate(data
             .replaceAll('.', '')
             .replaceAll('?', '')
             .replaceAll('!', '')
