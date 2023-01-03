@@ -53,17 +53,18 @@ export const toSecond = (millisecond: number): number => {
     return millisecond / 1000
 }
 
-export const getNextSub = (currentTimeMilliseconds: number): number => {
+export const getNextSubStartTime = (currentTimeMilliseconds: number, subtitleDiff: number): number => {
     const subtitle = $sources.store.getState().subtitle.en
     const timeCods = subtitle.map(item => item.from)
-    const sort = timeCods.filter(timeCod => timeCod > currentTimeMilliseconds).sort((a, b) => a - b)
+    let currentTime = currentTimeMilliseconds + subtitleDiff
+    const sort = timeCods.filter(timeCod => timeCod > currentTime).sort((a, b) => a - b)
     return sort[0]
 }
 
-export const getLastSubStartTime = (currentTimeMilliseconds: number): number => {
+export const getLastSubStartTime = (currentTimeMilliseconds: number, subtitleDiff: number): number => {
     const subtitle = $sources.store.getState().subtitle.en
     const currentSubtitle = getSubtitle(subtitle, currentTimeMilliseconds, 0)
-    let currentTime = currentTimeMilliseconds
+    let currentTime = currentTimeMilliseconds + subtitleDiff
     if (currentSubtitle != null) {
         currentTime = currentSubtitle.from - 1
     }

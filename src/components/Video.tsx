@@ -3,8 +3,9 @@ import { useStore } from 'effector-react'
 import { $sources } from '../store/sources'
 import { $video } from '../store/video'
 import { $translate } from '../store/translate'
-import { getLastSubStartTime, getNextSub } from '../utils'
+import { getLastSubStartTime, getNextSubStartTime } from '../utils'
 import { $interfaceActivity } from '../store/interfaceActivity'
+import { $subtitle } from '../store/subtitle'
 
 const { setCurrentMillisecond, setDuration, onTogglePlay } = $video.action
 
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const useMove = (videoRef: MutableRefObject<HTMLVideoElement>) => {
-
+    const diff = useStore($subtitle.store).subtitleDiff
 
     useEffect(() => {
         const onKeydown = (event) => {
@@ -21,17 +22,18 @@ const useMove = (videoRef: MutableRefObject<HTMLVideoElement>) => {
             const isArrowLeft = event.key === "ArrowLeft" || event.code === "ArrowLeft" || event.keyCode === 37
 
             if (isArrowRight) {
-                let nextSub = getNextSub(videoRef.current.currentTime * 1000)
-                videoRef.current.currentTime = nextSub / 1000
+                let nextSubStartTime = getNextSubStartTime(videoRef.current.currentTime * 1000, diff)
+                videoRef.current.currentTime = nextSubStartTime / 1000
             }
             if (isArrowLeft) {
-                videoRef.current.currentTime = getLastSubStartTime(videoRef.current.currentTime * 1000) / 1000
+                let lastSubStartTime = getLastSubStartTime(videoRef.current.currentTime * 1000, diff)
+                videoRef.current.currentTime = lastSubStartTime / 1000
             }
         }
         window.addEventListener('keydown', onKeydown)
 
         return () => window.removeEventListener('keydown', onKeydown)
-    }, [])
+    }, [diff])
 }
 
 export const Video: React.FC<Props> = ({ goToTime }) => {
