@@ -37,7 +37,6 @@ export const SubtitleContainer: React.FC<SubtitleContainerProps> = ({ lang, show
 
     useEffect(() => {
         const onKeydown = (event) => {
-            console.log(event.code)
             if (event.code === showWhenPressKey) {
                 setKeyShowPress(true)
             }
@@ -62,8 +61,6 @@ export const SubtitleContainer: React.FC<SubtitleContainerProps> = ({ lang, show
         return isDisplaySubtitle(subtitleMode, isPlay, isKeyShowPress)
     }, [subtitleMode, isPlay, isKeyShowPress])
 
-    console.log("isKeyShowPress", { lang, isKeyShowPress, isDisplayNativeSub })
-
     return (
         <Subtitle
             isDisplay={isDisplayNativeSub}
@@ -84,17 +81,19 @@ export const SubtitlesContainer: React.FC<Props> = () => {
 
     return (
         <div className='subtitle-container'>
-            {translateResult && <div className='translate'>
-                {translateResult}
-                <div>
-                    <a
-                        target='_blank'
-                        href={'https://context.reverso.net/translation/english-russian/' + textForTranslate}
-                        rel='noreferrer'>
-                        Подробнее
-                    </a>
+            {
+                translateResult && <div className='translate'>
+                    {translateResult}
+                    <div>
+                        <a
+                            target='_blank'
+                            href={'https://context.reverso.net/translation/english-russian/' + textForTranslate}
+                            rel='noreferrer'>
+                            Подробнее
+                        </a>
+                    </div>
                 </div>
-            </div>}
+            }
             <SubtitleContainer
                 lang='native'
                 showWhenPressKey='KeyL'

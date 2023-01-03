@@ -48,7 +48,6 @@ const SubtitleItem: React.FC<SubtitleItemProps> = ({ sources, isActive, langKey 
 
     const handleSecondSubtitleId = useCallback(() => {
         const diffId = parseInt(sources.id) - parseInt(currentSubtitleEn?.id)
-        console.log(diffId)
         $subtitle.action.setSubtitleIdDiff(diffId)
     }, [currentSubtitleEn, sources])
 

@@ -60,7 +60,7 @@ export const getNextSub = (currentTimeMilliseconds: number): number => {
     return sort[0]
 }
 
-export const getLastSub = (currentTimeMilliseconds: number): number => {
+export const getLastSubStartTime = (currentTimeMilliseconds: number): number => {
     const subtitle = $sources.store.getState().subtitle.en
     const currentSubtitle = getSubtitle(subtitle, currentTimeMilliseconds, 0)
     let currentTime = currentTimeMilliseconds
@@ -72,13 +72,20 @@ export const getLastSub = (currentTimeMilliseconds: number): number => {
     return sort[0]
 }
 
+export const getLastSub = (subtitles: Entry[], currentTimeMilliseconds: number): Entry => {
+    const sort = subtitles.filter(timeCod => timeCod.from < currentTimeMilliseconds)
+        .sort((a, b) => a.from - b.from)
+        .reverse()
+    return sort[0]
+}
+
 export const useCurrentSubtitle = (langKey: keyof SubtitleStore): Entry => {
     const { subtitleDiff, subtitleIdDiff } = useStore($subtitle.store)
     const { currentMillisecond } = useStore($video.store)
     const subtitle = useStore($sources.store).subtitle[langKey]
 
     return useMemo(() => {
-        return getSubtitle(subtitle, currentMillisecond, subtitleDiff)
+        return getLastSub(subtitle, currentMillisecond + subtitleDiff)
     }, [currentMillisecond, subtitle, subtitleDiff, subtitleIdDiff])
 }
 
