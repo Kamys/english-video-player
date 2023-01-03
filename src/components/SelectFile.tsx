@@ -4,12 +4,12 @@ import { Form } from 'react-bootstrap'
 interface Props {
     label: string
     accept: string
-    onSelect: (fileSrc: string) => void
+    onSelect: (file: File) => void
 }
 
 export const SelectFile: React.FC<Props> = ({ label, accept, onSelect }) => {
     const handleChange = useCallback((e) => {
-        onSelect(URL.createObjectURL(e.currentTarget.files[0]))
+        onSelect(e.currentTarget.files[0])
     }, [])
 
     return (
